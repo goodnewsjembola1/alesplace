@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ales Thread | Ales Place</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #faf7f0;
+      color: #201d19;
+    }
+
+    header {
+      background: #090909;
+      color: #e0c17e;
+      padding: 19px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header a {
+      color: #e0c17e;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .logo {
+      font-family: Georgia, serif;
+      font-size: 29px;
+      letter-spacing: 2px;
+    }
+
+    .hero {
+      min-height: 420px;
+      padding: 80px 7%;
+      display: flex;
+      align-items: center;
+      color: white;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.85), rgba(0,0,0,.2)),
+        url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=85") center/cover;
+    }
+
+    .hero-content { max-width: 620px; }
+
+    .hero h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(42px, 7vw, 68px);
+      margin: 0 0 15px;
+      color: #e0c17e;
+    }
+
+    .hero p {
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .gold-button {
+      display: inline-block;
+      background: #d5b46d;
+      color: #17130c;
+      padding: 14px 23px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 15px;
+      border-radius: 3px;
+    }
+
+    .container {
+      width: min(1100px, 90%);
+      margin: auto;
+      padding: 45px 0;
+    }
+
+    .section-title {
+      font-family: Georgia, serif;
+      font-size: 34px;
+      text-align: center;
+      color: #8a6a30;
+      margin-bottom: 12px;
+    }
+
+    .intro {
+      text-align: center;
+      max-width: 700px;
+      line-height: 1.8;
+      color: #71695e;
+      margin: 0 auto 30px;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .service {
+      background: white;
+      border: 1px solid #e9dfcc;
+      padding: 28px 22px;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .service .symbol {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .service h3 {
+      color: #8a6a30;
+      font-family: Georgia, serif;
+    }
+
+    .service p {
+      color: #746d62;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 290px;
+      object-fit: cover;
+      border-radius: 7px;
+      background: #eee;
+    }
+
+    .enquiry {
+      background: #111;
+      color: white;
+      padding: 38px;
+      max-width: 700px;
+      margin: auto;
+      border-radius: 9px;
+    }
+
+    .enquiry h2 {
+      font-family: Georgia, serif;
+      color: #e0c17e;
+      text-align: center;
+    }
+
+    .enquiry p {
+      color: #d2c9b9;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .enquiry label {
+      display: block;
+      margin: 15px 0 7px;
+    }
+
+    .enquiry input,
+    .enquiry select,
+    .enquiry textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #5b513e;
+      border-radius: 5px;
+      background: #201e1a;
+      color: white;
+      font: inherit;
+    }
+
+    .enquiry textarea { min-height: 110px; }
+
+    .submit {
+      width: 100%;
+      border: 0;
+      background: #d5b46d;
+      color: #17130c;
+      font-weight: bold;
+      padding: 15px;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+
+    .delivery-options {
+      display: none;
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .delivery-options h3 {
+      color: #e0c17e;
+      font-family: Georgia, serif;
+      font-size: 24px;
+    }
+
+    .delivery-options p {
+      color: #d2c9b9;
+      margin-bottom: 20px;
+    }
+
+    .choice-button {
+      display: block;
+      width: 100%;
+      padding: 17px;
+      margin: 12px 0;
+      border: 0;
+      border-radius: 5px;
+      background: #d5b46d;
+      color: #17130c;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .choice-button:hover,
+    .submit:hover {
+      background: #f0d28e;
+    }
+
+    .back-button {
+      background: transparent;
+      color: #e0c17e;
+      border: 1px solid #d5b46d;
+      padding: 12px;
+      width: 100%;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .contact {
+      text-align: center;
+      padding: 35px 15px;
+      line-height: 1.8;
+    }
+
+    .contact a {
+      color: #8a6a30;
+      font-weight: bold;
+    }
+
+    footer {
+      background: #090909;
+      color: #d5b46d;
+      text-align: center;
+      padding: 22px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 750px) {
+      .services, .gallery {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gallery img { height: 230px; }
+    }
+
+    @media (max-width: 520px) {
+      header { justify-content: center; }
+
+      .services, .gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .enquiry { padding: 25px 18px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html">← Back to Ales Place</a>
+  <div class="logo">ALES THREAD</div>
+  <a href="#enquiry">Make an Enquiry</a>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <h1>Style That Speaks</h1>
+    <p>
+      Welcome to Ales Thread, where fashion meets confidence.
+      Discover ready-to-wear pieces, custom outfits and tailoring
+      designed to help you express your personal style.
+    </p>
+    <a class="gold-button" href="#services">DISCOVER ALES THREAD</a>
+  </div>
+</section>
+
+<main>
+
+  <section class="container" id="services">
+    <h2 class="section-title">What We Offer</h2>
+
+    <p class="intro">
+      From everyday fashion to special outfits, Ales Thread is here
+      to help you find a look that feels right for you.
+    </p>
+
+    <div class="services">
+
+      <article class="service">
+        <div class="symbol">✂️</div>
+        <h3>Custom Sewing</h3>
+        <p>Outfits made to your measurements, preferences and personal style.</p>
+      </article>
+
+      <article class="service">
+        <div class="symbol">👔</div>
+        <h3>Men's Fashion</h3>
+        <p>Fashion options for men, from smart looks to traditional outfits.</p>
+      </article>
+
+      <article class="service">
+        <div class="symbol">👗</div>
+        <h3>Women's Fashion</h3>
+        <p>Beautiful outfit options for everyday wear and special occasions.</p>
+      </article>
+
+      <article class="service">
+        <div class="symbol">🧵</div>
+        <h3>Traditional Outfits</h3>
+        <p>Traditional styles made with attention to fit and finishing.</p>
+      </article>
+
+      <article class="service">
+        <div class="symbol">✨</div>
+        <h3>Ready-to-Wear</h3>
+        <p>Explore available pieces that are ready for you to wear.</p>
+      </article>
+
+      <article class="service">
+        <div class="symbol">📏</div>
+        <h3>Alterations</h3>
+        <p>Enquire about adjustments and alterations to your outfits.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="container">
+    <h2 class="section-title">Our Style Gallery</h2>
+
+    <p class="intro">
+      A preview of fashion inspiration. We can replace these sample
+      pictures with your actual Ales Thread designs.
+    </p>
+
+    <div class="gallery">
+      <img src="https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=700&q=85" alt="Men's fashion inspiration">
+
+      <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=700&q=85" alt="Women's fashion inspiration">
+
+      <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=700&q=85" alt="Fashion outfit inspiration">
+    </div>
+  </section>
+
+  <section class="container" id="enquiry">
+
+    <div class="enquiry">
+
+      <h2>Let's Create Your Look</h2>
+
+      <p>
+        Tell us what you are looking for. Send your enquiry directly
+        to Ales Thread on WhatsApp.
+      </p>
+
+      <form id="enquiryForm" onsubmit="showDeliveryOptions(event)">
+
+        <div id="formFields">
+
+          <label for="name">Your name</label>
+          <input id="name" type="text" placeholder="Enter your name" required>
+
+          <label for="phone">Your phone number</label>
+          <input id="phone" type="tel" placeholder="Enter your phone number" required>
+
+          <label for="service">What are you interested in?</label>
+
+          <select id="service" required>
+            <option value="">Choose a service</option>
+            <option>Custom sewing</option>
+            <option>Men's fashion</option>
+            <option>Women's fashion</option>
+            <option>Traditional outfits</option>
+            <option>Ready-to-wear</option>
+            <option>Alterations</option>
+            <option>Other enquiry</option>
+          </select>
+
+          <label for="details">Tell us more about what you need</label>
+
+          <textarea id="details" placeholder="Describe the outfit, style, size or other details..."></textarea>
+
+          <button class="submit" type="submit">
+            CONTINUE
+          </button>
+
+        </div>
+
+      </form>
+
+      <div class="delivery-options" id="deliveryOptions">
+
+        <h3>How would you like to receive your order?</h3>
+
+        <p>
+          Please select your preferred fulfilment option.
+        </p>
+
+        <button class="choice-button" type="button" onclick="completeEnquiry('DELIVERY')">
+          🚚 DELIVERY
+        </button>
+
+        <button class="choice-button" type="button" onclick="completeEnquiry('COLLECTION')">
+          🏬 COLLECTION
+        </button>
+
+        <button class="back-button" type="button" onclick="editEnquiry()">
+          ← GO BACK AND EDIT DETAILS
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<section class="contact">
+  <h2>Contact Ales Thread</h2>
+
+  <p>
+    WhatsApp:
+    <a href="https://wa.me/2348125006317" target="_blank">
+      08125006317
+    </a>
+  </p>
+
+  <p>Part of Ales Place — A World of Taste &amp; Style.</p>
+</section>
+
+<footer>
+  © <span id="year"></span> Ales Thread | Ales Place
+</footer>
+
+<script>
+
+  let customerEnquiry = {};
+
+  function showDeliveryOptions(event) {
+
+    event.preventDefault();
+
+    customerEnquiry = {
+      name: document.getElementById("name").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      service: document.getElementById("service").value,
+      details: document.getElementById("details").value.trim()
+    };
+
+    document.getElementById("formFields").style.display = "none";
+
+    document.getElementById("deliveryOptions").style.display = "block";
+
+  }
+
+  function editEnquiry() {
+
+    document.getElementById("formFields").style.display = "block";
+
+    document.getElementById("deliveryOptions").style.display = "none";
+
+  }
+
+  function completeEnquiry(choice) {
+
+    const message = [
+      "Hello Ales Thread! I would like to make an enquiry.",
+      "",
+      "Name: " + customerEnquiry.name,
+      "Phone: " + customerEnquiry.phone,
+      "Service: " + customerEnquiry.service,
+      "Details: " + (customerEnquiry.details || "No extra details provided."),
+      "Fulfilment: " + choice,
+      "",
+      choice === "DELIVERY"
+        ? "I would like my order delivered. Please let me know the delivery arrangements and charges."
+        : "I would like to collect my order. Please let me know the collection arrangements.",
+      "",
+      "Please get back to me. Thank you."
+    ].join("\n");
+
+    const whatsappURL =
+      "https://wa.me/2348125006317?text=" + encodeURIComponent(message);
+
+    window.location.href = whatsappURL;
+
+  }
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+</script>
+
+</body>
+</html>

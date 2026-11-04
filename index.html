@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ales Place | A World of Taste & Style</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #090909;
+      color: #f8f1e5;
+      min-height: 100vh;
+    }
+    .landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 45px 7%;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at top, #302414 0%, transparent 55%),
+        #090909;
+    }
+    .brand {
+      color: #d8b66a;
+      font-family: Georgia, serif;
+      font-size: clamp(42px, 8vw, 76px);
+      letter-spacing: 8px;
+      margin-bottom: 12px;
+    }
+    .tagline {
+      letter-spacing: 5px;
+      font-size: 13px;
+      color: #eee0c4;
+      margin-bottom: 22px;
+    }
+    .welcome {
+      color: #d8b66a;
+      font-family: Georgia, serif;
+      font-size: clamp(25px, 4vw, 38px);
+      margin-bottom: 12px;
+    }
+    .intro {
+      color: #c9c1b4;
+      max-width: 600px;
+      line-height: 1.8;
+      margin-bottom: 42px;
+    }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 25px;
+      width: 100%;
+      max-width: 950px;
+    }
+    .choice {
+      min-height: 340px;
+      border: 1px solid #a98a4e;
+      border-radius: 12px;
+      overflow: hidden;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      text-align: left;
+      padding: 30px;
+      transition: transform .25s, border-color .25s;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .choice::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 5%, rgba(0,0,0,.9));
+    }
+    .choice:hover {
+      transform: translateY(-7px);
+      border-color: #f0d28d;
+    }
+    .choice-content { position: relative; z-index: 1; }
+    .choice h2 {
+      color: #f0d28d;
+      font-family: Georgia, serif;
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+    .choice p { line-height: 1.6; color: #eee; margin-bottom: 18px; }
+    .explore {
+      display: inline-block;
+      padding: 12px 20px;
+      border: 1px solid #d8b66a;
+      color: #f0d28d;
+      letter-spacing: 1px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .lounge {
+  background-image: url("image/aluta-lounge-homepage.jpg")
+}
+ 
+    .thread {
+      background-image: url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=85");
+    }
+    footer {
+      margin-top: 50px;
+      color: #8e8578;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 700px) {
+      .choices { grid-template-columns: 1fr; }
+      .choice { min-height: 290px; }
+      .tagline { letter-spacing: 3px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="landing">
+    <div class="brand">ALES PLACE</div>
+    <div class="tagline">A WORLD OF TASTE &amp; STYLE</div>
+
+    <h1 class="welcome">Welcome to Ales Place</h1>
+    <p class="intro">
+      Discover a world where great taste meets personal style.
+      Choose an experience below and let us take you there.
+    </p>
+
+    <section class="choices">
+      <a class="choice lounge" href="ales-grill&chill.html">
+        <div class="choice-content">
+          <h2>Ales-grill&chill</h2>
+          <p>Good food, refreshing drinks and enjoyable moments.</p>
+          <span class="explore">EXPLORE ALES-GRILL&CHILL →</span>
+        </div>
+      </a>
+
+      <a class="choice thread" href="ales-thread.html">
+        <div class="choice-content">
+          <h2>Ales Thread</h2>
+          <p>Fashion, quality outfits and style made for you.</p>
+          <span class="explore">EXPLORE ALES THREAD →</span>
+        </div>
+      </a>
+    </section>
+
+    <footer>© <span id="year"></span> ALES PLACE. ALL RIGHTS RESERVED.</footer>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
