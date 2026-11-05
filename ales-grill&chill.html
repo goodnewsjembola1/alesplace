@@ -991,6 +991,21 @@ footer a {
 
   </div>
 
+  <div class="enquiry-panel" style="max-width:650px;margin:40px auto 0;text-align:left;background:var(--cream);padding:28px;border-radius:10px">
+    <h2 style="color:var(--red);text-align:center;margin-bottom:8px">Send Us an Enquiry</h2>
+    <p style="text-align:center;margin-bottom:20px;color:var(--grey)">Have a question about our food, drinks or services? Send us a message.</p>
+    <form id="grill-enquiry-form">
+      <label for="grill-enquiry-name" style="display:block;font-weight:bold;margin-bottom:6px">Your name</label>
+      <input id="grill-enquiry-name" name="name" type="text" autocomplete="name" required maxlength="120" placeholder="Enter your full name" style="width:100%;padding:13px;border:1px solid #ccc;border-radius:5px;margin-bottom:15px;font:inherit">
+      <label for="grill-enquiry-phone" style="display:block;font-weight:bold;margin-bottom:6px">Phone number</label>
+      <input id="grill-enquiry-phone" name="phone" type="tel" autocomplete="tel" required maxlength="40" placeholder="Enter your phone number" style="width:100%;padding:13px;border:1px solid #ccc;border-radius:5px;margin-bottom:15px;font:inherit">
+      <label for="grill-enquiry-message" style="display:block;font-weight:bold;margin-bottom:6px">Your message</label>
+      <textarea id="grill-enquiry-message" name="message" required maxlength="3000" rows="5" placeholder="How can we help you?" style="width:100%;padding:13px;border:1px solid #ccc;border-radius:5px;margin-bottom:15px;font:inherit;resize:vertical"></textarea>
+      <button class="btn" id="grill-enquiry-submit" type="submit" style="width:100%">SEND ENQUIRY</button>
+      <p id="grill-enquiry-feedback" role="status" aria-live="polite" style="margin-top:12px;text-align:center"></p>
+    </form>
+  </div>
+
   <p style="margin-top:30px">
     <a class="btn"
        href="https://wa.me/2349037576372"
@@ -1692,6 +1707,63 @@ document.addEventListener("keydown", function(event) {
   if (event.key === "Escape") {
     closeCart();
     closeOrderModal();
+  }
+});
+
+/* CUSTOMER ENQUIRIES */
+
+document.getElementById("grill-enquiry-form").addEventListener("submit", async function(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = document.getElementById("grill-enquiry-submit");
+  const feedback = document.getElementById("grill-enquiry-feedback");
+  const customerName = document.getElementById("grill-enquiry-name").value.trim();
+  const customerPhone = document.getElementById("grill-enquiry-phone").value.trim();
+  const message = document.getElementById("grill-enquiry-message").value.trim();
+
+  if (!window.alesSupabase) {
+    feedback.textContent = "The enquiry service is unavailable. Please refresh and try again.";
+    return;
+  }
+  if (!customerName || !customerPhone || !message) {
+    feedback.textContent = "Please complete all fields.";
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "SENDING…";
+  feedback.textContent = "";
+
+  try {
+    const { data: business, error: businessError } = await window.alesSupabase
+      .from("businesses")
+      .select("id")
+      .eq("slug", "ales-grill-chill")
+      .eq("is_active", true)
+      .single();
+
+    if (businessError || !business) throw businessError || new Error("Business record not found.");
+
+    const { error } = await window.alesSupabase
+      .from("customer_enquiries")
+      .insert({
+        business_id: business.id,
+        customer_name: customerName,
+        customer_phone: customerPhone,
+        message: message,
+        status: "Pending"
+      });
+
+    if (error) throw error;
+
+    form.reset();
+    feedback.textContent = "Thank you! Your enquiry has been sent successfully.";
+  } catch (error) {
+    console.error("Ales Grill & Chill enquiry submission failed:", error);
+    feedback.textContent = "We couldn't send your enquiry. Please try again or contact us on WhatsApp.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "SEND ENQUIRY";
   }
 });
 
