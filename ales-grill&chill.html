@@ -98,7 +98,7 @@ section { padding: 65px 7%; }
 
 .btn:hover { background: var(--dark-red); }
 
-/* EXPLORE OUR MENU PRESENTATION */
+/* PROMOTION AND HIGHLIGHT PRESENTATION */
 
 .presentation { background: white; }
 
@@ -292,9 +292,156 @@ section { padding: 65px 7%; }
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
+  transition: .2s;
 }
 
 .order-now:hover { background: var(--dark-red); }
+
+/* SHOPPING CART */
+
+.cart-section {
+  background: white;
+}
+
+.cart-container {
+  max-width: 950px;
+  margin: auto;
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 35px 15px;
+  background: var(--cream);
+  border-radius: 8px;
+  color: var(--grey);
+}
+
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fffdfb;
+}
+
+.cart-item img {
+  width: 95px;
+  height: 85px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #f4e8e5;
+}
+
+.cart-item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-item-details h3 {
+  font-size: 16px;
+}
+
+.cart-item-price {
+  color: var(--red);
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.quantity-controls button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  background: var(--red);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.quantity-controls button:hover {
+  background: var(--dark-red);
+}
+
+.quantity-number {
+  font-weight: bold;
+  min-width: 15px;
+  text-align: center;
+}
+
+.cart-item-total {
+  font-weight: bold;
+  text-align: right;
+  min-width: 100px;
+}
+
+.remove-item {
+  display: block;
+  margin-top: 8px;
+  border: none;
+  background: none;
+  color: var(--red);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 13px;
+}
+
+.cart-summary {
+  margin-top: 25px;
+  padding: 22px;
+  background: var(--cream);
+  border-radius: 8px;
+}
+
+.cart-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.cart-grand-total {
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
+  margin-top: 15px;
+  font-size: 21px;
+  font-weight: bold;
+  color: var(--red);
+}
+
+.checkout-button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 18px;
+  border: none;
+  border-radius: 5px;
+  background: var(--red);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.checkout-button:hover { background: var(--dark-red); }
+
+.checkout-button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
 
 /* CONTACT */
 
@@ -340,7 +487,7 @@ footer a {
   margin-top: 15px;
 }
 
-/* ORDER WINDOW */
+/* CHECKOUT WINDOW */
 
 .order-modal {
   display: none;
@@ -351,6 +498,7 @@ footer a {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .order-modal.show { display: flex; }
@@ -363,6 +511,7 @@ footer a {
   border-radius: 10px;
   text-align: center;
   position: relative;
+  margin: auto;
 }
 
 .order-box h2 {
@@ -409,6 +558,8 @@ footer a {
   cursor: pointer;
 }
 
+/* SUCCESS MESSAGE */
+
 .order-toast {
   position: fixed;
   bottom: 25px;
@@ -424,6 +575,7 @@ footer a {
   transition: .3s;
   text-align: center;
   max-width: 90%;
+  width: max-content;
 }
 
 .order-toast.show {
@@ -469,6 +621,26 @@ footer a {
     flex: 1;
     min-width: 130px;
   }
+
+  .cart-item {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .cart-item img {
+    width: 75px;
+    height: 75px;
+  }
+
+  .cart-item-details {
+    flex: 1;
+  }
+
+  .cart-item-total {
+    width: 100%;
+    text-align: left;
+    padding-left: 87px;
+  }
 }
 </style>
 </head>
@@ -480,15 +652,16 @@ footer a {
 
   <nav>
     <a href="index.html">Ales Place</a>
-    <a href="#presentation">Promotion & Highlight</a>
+    <a href="#presentation">Promotion &amp; Highlight</a>
     <a href="#menu-categories">Menu</a>
+    <a href="#cart">Cart (<span id="cart-count">0</span>)</a>
     <a href="#contact">Contact</a>
   </nav>
 </header>
 
 <main>
 
-<!-- PROMOTION & HIGHLIGHT -->
+<!-- PROMOTION AND HIGHLIGHT -->
 
 <section class="presentation" id="presentation">
 
@@ -497,7 +670,7 @@ footer a {
       GOOD FOOD • GREAT DRINKS • GOOD TIMES
     </div>
 
-    <h2>Promotion & Highlight</h2>
+    <h2>Promotion &amp; Highlight</h2>
 
     <p>Take a look at what is waiting for you at Ales Grill &amp; Chill.</p>
   </div>
@@ -633,6 +806,49 @@ footer a {
 
 </section>
 
+<!-- SHOPPING CART -->
+
+<section class="cart-section" id="cart">
+
+  <div class="section-heading">
+    <h2>Your Shopping Cart</h2>
+    <p>Review your selected food and drinks before placing your order.</p>
+  </div>
+
+  <div class="cart-container">
+
+    <div id="cart-items">
+      <div class="cart-empty">
+        Your cart is empty. Add some food or drinks to get started.
+      </div>
+    </div>
+
+    <div class="cart-summary">
+
+      <div class="cart-summary-row">
+        <span>Total items:</span>
+        <strong id="cart-total-items">0</strong>
+      </div>
+
+      <div class="cart-summary-row cart-grand-total">
+        <span>Total:</span>
+        <span id="cart-total-price">₦0</span>
+      </div>
+
+      <button
+        class="checkout-button"
+        id="checkout-button"
+        onclick="openCheckout()"
+        disabled>
+        PROCEED TO CHECKOUT
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
 <!-- CONTACT -->
 
 <section class="info-section" id="contact">
@@ -689,7 +905,7 @@ footer a {
   </p>
 </footer>
 
-<!-- ORDER WINDOW -->
+<!-- CHECKOUT WINDOW -->
 
 <div class="order-modal" id="order-modal">
   <div class="order-box">
@@ -697,12 +913,13 @@ footer a {
     <button class="close-modal" onclick="closeOrderModal()">×</button>
 
     <h2>Complete Your Order</h2>
-    <p id="selected-product"></p>
+    <p>Please enter your name to continue.</p>
 
     <input
       type="text"
       id="customer-name"
-      placeholder="Enter your name">
+      placeholder="Enter your name"
+      autocomplete="name">
 
     <p>How would you like to receive your order?</p>
 
@@ -720,7 +937,7 @@ footer a {
 </div>
 
 <div class="order-toast" id="order-toast">
-  Opening WhatsApp...
+  Added to cart successfully!
 </div>
 
 <script>
@@ -875,6 +1092,10 @@ const drinks = [
   }
 ];
 
+/* CART DATA */
+
+let cart = [];
+
 /* DISPLAY PRICES */
 
 function money(amount) {
@@ -906,8 +1127,8 @@ function displayProducts(containerId, products, category) {
 
         <button
           class="order-now"
-          onclick="openOrderModal('${category}', ${index})">
-          ORDER ON WHATSAPP
+          onclick="addToCart('${category}', ${index})">
+          ADD TO CART
         </button>
       </div>
 
@@ -927,27 +1148,175 @@ function showCategory(category) {
   document.getElementById("drinks-tab").classList.toggle("active", !isFood);
 }
 
-/* ORDER DETAILS */
+/* ADD PRODUCTS TO CART */
 
-let selectedOrder = null;
-
-function openOrderModal(category, index) {
+function addToCart(category, index) {
   const products = category === "food" ? food : drinks;
-  selectedOrder = products[index];
+  const product = products[index];
 
-  document.getElementById("selected-product").textContent =
-    selectedOrder.name + " - " + money(selectedOrder.price);
+  const existingItem = cart.find(item =>
+    item.name === product.name && item.category === category
+  );
+
+  if (existingItem) {
+    existingItem.quantity++;
+  } else {
+    cart.push({
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: category,
+      quantity: 1
+    });
+  }
+
+  updateCart();
+
+  showToast(product.name + " added to cart successfully!");
+}
+
+/* INCREASE QUANTITY */
+
+function increaseQuantity(index) {
+  cart[index].quantity++;
+  updateCart();
+}
+
+/* REDUCE QUANTITY */
+
+function decreaseQuantity(index) {
+  cart[index].quantity--;
+
+  if (cart[index].quantity <= 0) {
+    cart.splice(index, 1);
+  }
+
+  updateCart();
+}
+
+/* REMOVE ITEM */
+
+function removeCartItem(index) {
+  cart.splice(index, 1);
+  updateCart();
+  showToast("Item removed from your cart.");
+}
+
+/* UPDATE CART DISPLAY */
+
+function updateCart() {
+  const cartItems = document.getElementById("cart-items");
+  const cartCount = document.getElementById("cart-count");
+  const totalItemsElement = document.getElementById("cart-total-items");
+  const totalPriceElement = document.getElementById("cart-total-price");
+  const checkoutButton = document.getElementById("checkout-button");
+
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  cartCount.textContent = totalItems;
+  totalItemsElement.textContent = totalItems;
+  totalPriceElement.textContent = money(totalPrice);
+
+  checkoutButton.disabled = cart.length === 0;
+
+  if (cart.length === 0) {
+    cartItems.innerHTML = `
+      <div class="cart-empty">
+        Your cart is empty. Add some food or drinks to get started.
+      </div>
+    `;
+    return;
+  }
+
+  cartItems.innerHTML = `
+    <div class="cart-list">
+      ${cart.map((item, index) => `
+        <div class="cart-item">
+
+          <img src="${item.image}" alt="${item.name}"
+            onerror="this.onerror=null;this.src='https://placehold.co/200x150/f4e8e5/b5121b?text=Image';">
+
+          <div class="cart-item-details">
+            <h3>${item.name}</h3>
+
+            <div class="cart-item-price">
+              ${money(item.price)} each
+            </div>
+
+            <div class="quantity-controls">
+              <button
+                onclick="decreaseQuantity(${index})"
+                aria-label="Reduce quantity">
+                −
+              </button>
+
+              <span class="quantity-number">${item.quantity}</span>
+
+              <button
+                onclick="increaseQuantity(${index})"
+                aria-label="Increase quantity">
+                +
+              </button>
+            </div>
+
+            <button
+              class="remove-item"
+              onclick="removeCartItem(${index})">
+              Remove item
+            </button>
+          </div>
+
+          <div class="cart-item-total">
+            ${money(item.price * item.quantity)}
+          </div>
+
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+/* SUCCESS MESSAGE */
+
+let toastTimer;
+
+function showToast(message) {
+  const toast = document.getElementById("order-toast");
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+}
+
+/* OPEN CHECKOUT */
+
+function openCheckout() {
+  if (cart.length === 0) {
+    showToast("Your cart is empty.");
+    return;
+  }
 
   document.getElementById("customer-name").value = "";
-
   document.getElementById("order-modal").classList.add("show");
 }
+
+/* CLOSE CHECKOUT */
 
 function closeOrderModal() {
   document.getElementById("order-modal").classList.remove("show");
 }
 
-/* SEND ORDER TO WHATSAPP */
+/* SEND COMPLETE CART ORDER TO WHATSAPP */
 
 function sendOrder(fulfilment) {
   const customerName = document.getElementById("customer-name").value.trim();
@@ -958,14 +1327,37 @@ function sendOrder(fulfilment) {
     return;
   }
 
-  if (!selectedOrder) return;
+  if (cart.length === 0) {
+    alert("Your cart is empty.");
+    closeOrderModal();
+    return;
+  }
+
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   let message = "Hello Ales Grill & Chill! I would like to place an order.\n\n";
 
   message += "Name: " + customerName + "\n";
   message += "Fulfilment: " + fulfilment + "\n\n";
-  message += "Order: " + selectedOrder.name + "\n";
-  message += "Price: " + money(selectedOrder.price) + "\n\n";
+  message += "MY ORDER:\n";
+
+  cart.forEach((item, index) => {
+    message +=
+      (index + 1) + ". " +
+      item.name +
+      "\nQuantity: " + item.quantity +
+      "\nPrice each: " + money(item.price) +
+      "\nSubtotal: " + money(item.price * item.quantity) +
+      "\n\n";
+  });
+
+  message += "TOTAL ITEMS: " +
+    cart.reduce((sum, item) => sum + item.quantity, 0) + "\n";
+
+  message += "TOTAL AMOUNT: " + money(totalPrice) + "\n\n";
 
   if (fulfilment === "DELIVERY") {
     message += "Please let me know the delivery fee and next steps.";
@@ -978,23 +1370,36 @@ function sendOrder(fulfilment) {
   const whatsappURL =
     "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
 
-  window.open(whatsappURL, "_blank");
+  const whatsappWindow = window.open(whatsappURL, "_blank");
+
+  if (!whatsappWindow) {
+    window.location.href = whatsappURL;
+    return;
+  }
 
   closeOrderModal();
 
-  const toast = document.getElementById("order-toast");
-  toast.textContent = "Opening WhatsApp to order " + selectedOrder.name + "...";
-  toast.classList.add("show");
+  showToast("Your order is ready on WhatsApp!");
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2500);
+  /* Clear cart after opening WhatsApp */
+  cart = [];
+  updateCart();
 }
+
+/* CLOSE CHECKOUT WHEN CLICKING OUTSIDE THE BOX */
+
+document.getElementById("order-modal").addEventListener("click", function(event) {
+  if (event.target === this) {
+    closeOrderModal();
+  }
+});
 
 /* LOAD THE WEBSITE */
 
 displayProducts("food-products", food, "food");
 displayProducts("drink-products", drinks, "drinks");
+
+updateCart();
 
 showPromoSlide(0);
 
