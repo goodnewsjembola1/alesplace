@@ -1227,16 +1227,13 @@ async function loadMenuFromSupabase() {
     id: product.id,
     name: product.name,
     description: product.description || "",
+    category: String(product.category || "").trim().toLowerCase(),
     price: Number(product.price_ngn),
     image: product.image_url || "https://placehold.co/700x450/f4e8e5/b5121b?text=Image+Coming+Soon"
   }));
 
-  food = activeProducts.filter((product, index) =>
-    String(products[index].category || "").trim().toLowerCase() === "food"
-  );
-  drinks = activeProducts.filter((product, index) =>
-    String(products[index].category || "").trim().toLowerCase() === "drinks"
-  );
+  food = activeProducts.filter(product => product.category === "food");
+  drinks = activeProducts.filter(product => product.category === "drinks");
 
   displayProducts("food-products", food, "food");
   displayProducts("drink-products", drinks, "drinks");
