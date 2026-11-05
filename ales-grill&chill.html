@@ -1177,105 +1177,70 @@ function restartPromoTimer() {
   }, 5000);
 }
 
-/* FOOD MENU */
+/* LIVE MENU FROM SUPABASE */
 
-const food = [
-  {
-    name: "Beef Shawarma",
-    price: 2000,
-    image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=700"
-  },
-  {
-    name: "Chicken Shawarma",
-    price: 2000,
-    image: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=700"
-  },
-  {
-    name: "Gizzard",
-    price: 5000,
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=700"
-  },
-  {
-    name: "Chicken and Chips",
-    price: 3500,
-    image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=700"
-  },
-  {
-    name: "Chips and Fish",
-    price: 5000,
-    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=700"
-  },
-  {
-    name: "Noodles and Chicken",
-    price: 4000,
-    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=700"
-  },
-  {
-    name: "Rice and Chicken",
-    price: 8000,
-    image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=700"
-  },
-  {
-    name: "Rice and Beef",
-    price: 6000,
-    image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=700"
+let food = [];
+let drinks = [];
+
+async function loadMenuFromSupabase() {
+  const foodContainer = document.getElementById("food-products");
+  const drinkContainer = document.getElementById("drink-products");
+
+  foodContainer.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:25px">Loading food menu…</p>';
+  drinkContainer.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:25px">Loading drinks menu…</p>';
+
+  if (!window.alesSupabase) {
+    foodContainer.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:25px">Menu connection unavailable. Please refresh the page.</p>';
+    drinkContainer.innerHTML = "";
+    return;
   }
-];
 
-/* DRINKS MENU */
+  const { data: business, error: businessError } = await window.alesSupabase
+    .from("businesses")
+    .select("id")
+    .eq("slug", "ales-grill-chill")
+    .eq("is_active", true)
+    .single();
 
-const drinks = [
-  {
-    name: "Zobo",
-    price: 1500,
-    image: "image/zobo.jpg"
-  },
-  {
-    name: "Coke",
-    price: 500,
-    image: "image/coke.jpg"
-  },
-  {
-    name: "Fanta",
-    price: 500,
-    image: "image/fanta.jpg"
-  },
-  {
-    name: "Goldberg",
-    price: 1500,
-    image: "image/goldberg.jpg"
-  },
-  {
-    name: "Trophy",
-    price: 1500,
-    image: "image/trophy.jpg"
-  },
-  {
-    name: "Fayrouz",
-    price: 800,
-    image: "image/fayrouz.jpg"
-  },
-  {
-    name: "Smirnoff Ice",
-    price: 1500,
-    image: "image/smirnoff ice.jpg"
-  },
-  {
-    name: "Smirnoff Vodka",
-    price: 5000,
-    image: "image/smirnoff vodka.jpg"
-  },
-  {
-    name: "Red Label",
-    price: 10000,
-    image: "image/red label.jpg"
-  },
-  {
-    name: "Jack Daniel's",
-    price: 20000,
-    image: "image/jack daniels.jpg"
+  if (businessError || !business) {
+    foodContainer.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:25px">We could not load the menu right now. Please try again shortly.</p>';
+    drinkContainer.innerHTML = "";
+    console.error("Ales Grill & Chill business lookup failed:", businessError);
+    return;
   }
-];
+
+  const { data: products, error } = await window.alesSupabase
+    .from("products")
+    .select("id,name,description,category,price_ngn,image_url,is_active")
+    .eq("business_id", business.id)
+    .eq("is_active", true)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    foodContainer.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:25px">We could not load the menu right now. Please try again shortly.</p>';
+    drinkContainer.innerHTML = "";
+    console.error("Ales Grill & Chill products lookup failed:", error);
+    return;
+  }
+
+  const activeProducts = (products || []).map(product => ({
+    id: product.id,
+    name: product.name,
+    description: product.description || "",
+    price: Number(product.price_ngn),
+    image: product.image_url || "https://placehold.co/700x450/f4e8e5/b5121b?text=Image+Coming+Soon"
+  }));
+
+  food = activeProducts.filter((product, index) =>
+    String(products[index].category || "").trim().toLowerCase() === "food"
+  );
+  drinks = activeProducts.filter((product, index) =>
+    String(products[index].category || "").trim().toLowerCase() === "drinks"
+  );
+
+  displayProducts("food-products", food, "food");
+  displayProducts("drink-products", drinks, "drinks");
+}
 
 /* CART DATA */
 
@@ -1303,34 +1268,34 @@ function closeCart() {
 
 /* DISPLAY PRODUCTS */
 
+function escapeMenuText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[character]));
+}
+
 function displayProducts(containerId, products, category) {
   const container = document.getElementById(containerId);
 
+  if (!products.length) {
+    container.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:25px;color:#666">No active ' + (category === "food" ? "food" : "drinks") + ' products are available at the moment.</p>';
+    return;
+  }
+
   container.innerHTML = products.map((product, index) => `
     <article class="product">
-
       <div class="product-image">
-        <img
-          src="${product.image}"
-          alt="${product.name}"
+        <img src="${escapeMenuText(product.image)}"
+          alt="${escapeMenuText(product.name)}"
           loading="lazy"
           onerror="this.onerror=null;this.src='https://placehold.co/700x450/f4e8e5/b5121b?text=Image+Unavailable';">
       </div>
-
       <div class="product-details">
-        <h3>${product.name}</h3>
-
-        <div class="price">
-          ${money(product.price)}
-        </div>
-
-        <button
-          class="order-now"
-          onclick="addToCart('${category}', ${index})">
-          ADD TO CART
-        </button>
+        <h3>${escapeMenuText(product.name)}</h3>
+        ${product.description ? '<p>' + escapeMenuText(product.description) + '</p>' : ''}
+        <div class="price">${money(product.price)}</div>
+        <button class="order-now" onclick="addToCart('${category}', ${index})">ADD TO CART</button>
       </div>
-
     </article>
   `).join("");
 }
@@ -1638,9 +1603,7 @@ document.addEventListener("keydown", function(event) {
 
 /* LOAD THE WEBSITE */
 
-displayProducts("food-products", food, "food");
-displayProducts("drink-products", drinks, "drinks");
-
+loadMenuFromSupabase();
 updateCart();
 
 showPromoSlide(0);
