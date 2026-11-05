@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ales Grill & Chill | Ales Place</title>
+<title>Ales Grill &amp; Chill | Ales Place</title>
 
 <style>
 :root {
@@ -20,9 +21,7 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   font-family: Arial, sans-serif;
@@ -61,23 +60,9 @@ nav a {
   font-size: 14px;
 }
 
-nav a:hover {
-  text-decoration: underline;
-}
+nav a:hover { text-decoration: underline; }
 
-.cart-button {
-  background: white;
-  color: var(--red);
-  border: none;
-  padding: 10px 16px;
-  cursor: pointer;
-  font-weight: bold;
-  border-radius: 4px;
-}
-
-section {
-  padding: 65px 7%;
-}
+section { padding: 65px 7%; }
 
 .section-heading {
   text-align: center;
@@ -90,9 +75,7 @@ section {
   margin: 8px 0;
 }
 
-.section-heading p {
-  color: var(--grey);
-}
+.section-heading p { color: var(--grey); }
 
 .eyebrow {
   color: #ffd5d5;
@@ -113,15 +96,11 @@ section {
   border-radius: 4px;
 }
 
-.btn:hover {
-  background: var(--dark-red);
-}
+.btn:hover { background: var(--dark-red); }
 
-/* HIGHLIGHTS AND PROMOTIONS */
+/* EXPLORE OUR MENU PRESENTATION */
 
-.presentation {
-  background: white;
-}
+.presentation { background: white; }
 
 .promo-slideshow {
   position: relative;
@@ -192,13 +171,8 @@ section {
   cursor: pointer;
 }
 
-.promo-arrow.prev {
-  left: 18px;
-}
-
-.promo-arrow.next {
-  right: 18px;
-}
+.promo-arrow.prev { left: 18px; }
+.promo-arrow.next { right: 18px; }
 
 .promo-dots {
   position: absolute;
@@ -226,11 +200,43 @@ section {
   transform: scale(1.2);
 }
 
-/* MENU */
+/* FOOD AND DRINKS MENU */
 
-.menu-section {
-  background: #fff4f4;
+.menu-section { background: #fff4f4; }
+
+.category-choices {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 32px 0 12px;
 }
+
+.category-choice {
+  min-width: 180px;
+  padding: 16px 35px;
+  border: 2px solid var(--red);
+  background: white;
+  color: var(--red);
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.category-choice:hover,
+.category-choice.active {
+  background: var(--red);
+  color: white;
+}
+
+.category-page {
+  display: none;
+  min-height: 55vh;
+}
+
+.category-page.active { display: block; }
 
 .products {
   display: grid;
@@ -247,9 +253,7 @@ section {
   transition: transform .3s ease;
 }
 
-.product:hover {
-  transform: translateY(-5px);
-}
+.product:hover { transform: translateY(-5px); }
 
 .product-image {
   width: 100%;
@@ -266,17 +270,11 @@ section {
   transition: transform .3s ease;
 }
 
-.product:hover .product-image img {
-  transform: scale(1.05);
-}
+.product:hover .product-image img { transform: scale(1.05); }
 
-.product-details {
-  padding: 20px;
-}
+.product-details { padding: 20px; }
 
-.product h3 {
-  font-size: 18px;
-}
+.product h3 { font-size: 18px; }
 
 .price {
   color: var(--red);
@@ -285,25 +283,18 @@ section {
   margin: 8px 0 15px;
 }
 
-.add {
+.order-now {
   width: 100%;
   padding: 12px;
   background: var(--red);
   color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
+  border: 0;
   border-radius: 4px;
-  transition: background .2s;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.add:hover {
-  background: var(--dark-red);
-}
-
-.add.selected {
-  background: #218c50;
-}
+.order-now:hover { background: var(--dark-red); }
 
 /* CONTACT */
 
@@ -349,115 +340,76 @@ footer a {
   margin-top: 15px;
 }
 
-/* CART */
+/* ORDER WINDOW */
 
-.cart-panel {
+.order-modal {
+  display: none;
   position: fixed;
-  top: 0;
-  right: -450px;
-  width: min(420px, 100%);
-  height: 100vh;
+  inset: 0;
+  background: #0009;
+  z-index: 500;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.order-modal.show { display: flex; }
+
+.order-box {
   background: white;
-  z-index: 100;
-  padding: 25px;
-  box-shadow: 0 0 30px #0003;
-  overflow-y: auto;
-  transition: right .3s;
+  width: 100%;
+  max-width: 430px;
+  padding: 28px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
 }
 
-.cart-panel.open {
-  right: 0;
-}
-
-.cart-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.cart-line button {
-  border: none;
+.order-box h2 {
   color: var(--red);
-  background: none;
-  cursor: pointer;
-  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-.quantity-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-}
+.order-box p { margin-bottom: 15px; }
 
-.quantity-controls button {
-  background: var(--red);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  width: 28px;
-  height: 28px;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.cart-total {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 20px 0;
-}
-
-.close {
-  float: right;
-  border: none;
-  background: none;
-  font-size: 25px;
-  cursor: pointer;
-}
-
-.whatsapp {
+.order-box input {
   width: 100%;
-  padding: 14px;
-  background: #218c50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
-  border-radius: 4px;
-}
-
-.delivery-choice {
-  width: 100%;
-  padding: 16px;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
+  padding: 13px;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  margin-top: 15px;
+  margin-bottom: 18px;
+  font-size: 15px;
 }
 
-.delivery-choice.delivery {
-  background: #218c50;
+.fulfilment-button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 12px;
 }
 
-.delivery-choice.collection {
-  background: var(--red);
+.delivery-button { background: #218c50; }
+.collection-button { background: var(--red); }
+
+.fulfilment-button:hover { opacity: .85; }
+
+.close-modal {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  border: none;
+  background: none;
+  font-size: 27px;
+  cursor: pointer;
 }
 
-.empty {
-  padding: 20px 0;
-  color: var(--grey);
-}
-
-/* SUCCESS MESSAGE */
-
-.cart-toast {
+.order-toast {
   position: fixed;
   bottom: 25px;
   left: 50%;
@@ -468,14 +420,13 @@ footer a {
   border-radius: 6px;
   opacity: 0;
   visibility: hidden;
-  z-index: 200;
+  z-index: 600;
   transition: .3s;
   text-align: center;
-  width: max-content;
   max-width: 90%;
 }
 
-.cart-toast.show {
+.order-toast.show {
   opacity: 1;
   visibility: visible;
   transform: translate(-50%, 0);
@@ -483,43 +434,27 @@ footer a {
 
 /* MOBILE */
 
-@media (max-width: 750px) {
-  header {
-    padding: 18px 5%;
-  }
+@media(max-width: 750px) {
+  header { padding: 18px 5%; }
 
-  nav {
-    gap: 12px;
-  }
+  nav { gap: 12px; }
 
-  nav a {
-    font-size: 12px;
-  }
+  nav a { font-size: 12px; }
 
-  section {
-    padding: 50px 5%;
-  }
+  section { padding: 50px 5%; }
 
   .products,
   .info-grid {
     grid-template-columns: 1fr;
   }
 
-  .product-image {
-    height: 230px;
-  }
+  .product-image { height: 230px; }
 
-  .promo-slideshow {
-    min-height: 420px;
-  }
+  .promo-slideshow { min-height: 420px; }
 
-  .promo-copy {
-    padding: 55px 9%;
-  }
+  .promo-copy { padding: 55px 9%; }
 
-  .promo-copy p {
-    font-size: 15px;
-  }
+  .promo-copy p { font-size: 15px; }
 
   .promo-arrow {
     width: 36px;
@@ -527,12 +462,12 @@ footer a {
     font-size: 22px;
   }
 
-  .promo-arrow.prev {
-    left: 10px;
-  }
+  .promo-arrow.prev { left: 10px; }
+  .promo-arrow.next { right: 10px; }
 
-  .promo-arrow.next {
-    right: 10px;
+  .category-choice {
+    flex: 1;
+    min-width: 130px;
   }
 }
 </style>
@@ -545,20 +480,15 @@ footer a {
 
   <nav>
     <a href="index.html">Ales Place</a>
-    <a href="#presentation">Highlights &amp; Promotions</a>
-    <a href="#menu">Food Menu</a>
-    <a href="#drinks">Drinks</a>
+    <a href="#presentation">Explore Our Menu</a>
+    <a href="#menu-categories">Food &amp; Drinks</a>
     <a href="#contact">Contact</a>
-
-    <button class="cart-button" onclick="openCart()">
-      Cart (<span id="cart-count">0</span>)
-    </button>
   </nav>
 </header>
 
 <main>
 
-<!-- HIGHLIGHTS AND PROMOTIONS SECTION -->
+<!-- EXPLORE OUR MENU -->
 
 <section class="presentation" id="presentation">
 
@@ -567,12 +497,12 @@ footer a {
       GOOD FOOD • GREAT DRINKS • GOOD TIMES
     </div>
 
-    <h2>Promotions &amp; Highlights</h2>
+    <h2>Explore Our Menu</h2>
 
     <p>Take a look at what is waiting for you at Ales Grill &amp; Chill.</p>
   </div>
 
-  <div class="promo-slideshow">
+  <div class="promo-slideshow" id="promo-slideshow">
 
     <article class="promo-slide active"
       style="background-image:url('image/aluta-lounge-homepage.jpg')">
@@ -580,7 +510,7 @@ footer a {
         <div class="eyebrow">WELCOME TO ALES GRILL &amp; CHILL</div>
         <h3>Good Food. Great Drinks. Good Times.</h3>
         <p>Enjoy delicious meals, refreshing drinks and a wonderful experience.</p>
-        <a href="#menu" class="btn">EXPLORE OUR MENU</a>
+        <a href="#menu-categories" class="btn">EXPLORE OUR MENU</a>
       </div>
     </article>
 
@@ -590,7 +520,7 @@ footer a {
         <div class="eyebrow">A TASTE TO REMEMBER</div>
         <h3>Jollof Rice &amp; Turkey</h3>
         <p>Rich flavour, delicious rice and a satisfying serving made for you.</p>
-        <a href="#menu" class="btn">VIEW FOOD MENU</a>
+        <a href="#menu-categories" class="btn">VIEW FOOD MENU</a>
       </div>
     </article>
 
@@ -600,7 +530,7 @@ footer a {
         <div class="eyebrow">GOOD FOOD, GREAT FLAVOUR</div>
         <h3>Rice &amp; Beef</h3>
         <p>A hearty meal for when you want something truly satisfying.</p>
-        <a href="#menu" class="btn">EXPLORE OUR FOOD</a>
+        <a href="#menu-categories" class="btn">EXPLORE OUR FOOD</a>
       </div>
     </article>
 
@@ -610,7 +540,7 @@ footer a {
         <div class="eyebrow">MADE TO SATISFY</div>
         <h3>Delicious Spaghetti</h3>
         <p>Enjoy a tasty favourite, prepared to make every bite count.</p>
-        <a href="#menu" class="btn">VIEW FOOD MENU</a>
+        <a href="#menu-categories" class="btn">VIEW FOOD MENU</a>
       </div>
     </article>
 
@@ -620,7 +550,7 @@ footer a {
         <div class="eyebrow">FLAVOUR IN EVERY SERVING</div>
         <h3>Fried Rice &amp; Turkey</h3>
         <p>Bring your appetite and enjoy a delicious meal at Ales Grill &amp; Chill.</p>
-        <a href="#menu" class="btn">ORDER YOUR FAVOURITE</a>
+        <a href="#menu-categories" class="btn">ORDER YOUR FAVOURITE</a>
       </div>
     </article>
 
@@ -630,86 +560,80 @@ footer a {
         <div class="eyebrow">CRAVING SOMETHING TASTY?</div>
         <h3>Assorted Noodles</h3>
         <p>A flavour-packed option for a satisfying food moment.</p>
-        <a href="#menu" class="btn">EXPLORE OUR MENU</a>
+        <a href="#menu-categories" class="btn">EXPLORE OUR MENU</a>
       </div>
     </article>
 
     <article class="promo-slide"
       style="background-image:url('image/sharwama.jpg')">
       <div class="promo-copy">
-        <div class="eyebrow">A CROWD FAVOURITE</div>
-        <h3>Fresh, Tasty Shawarma</h3>
-        <p>Choose beef or chicken shawarma and enjoy every bite.</p>
-        <a href="#menu" class="btn">ORDER SHAWARMA</a>
+        <div class="eyebrow">A DELICIOUS FAVOURITE</div>
+        <h3>Enjoy Our Shawarma</h3>
+        <p>Choose your favourite and enjoy a tasty treat.</p>
+        <a href="#menu-categories" class="btn">VIEW FOOD MENU</a>
       </div>
     </article>
 
     <article class="promo-slide"
       style="background-image:url('image/zobo.jpg')">
       <div class="promo-copy">
-        <div class="eyebrow">REFRESH YOUR MOMENT</div>
-        <h3>Your Favourite Drinks Are Waiting</h3>
-        <p>Choose from refreshing drinks and favourites for every occasion.</p>
-        <a href="#drinks" class="btn">EXPLORE OUR DRINKS</a>
+        <div class="eyebrow">REFRESH YOURSELF</div>
+        <h3>Refreshing Zobo</h3>
+        <p>Enjoy a refreshing drink with your favourite meal.</p>
+        <a href="#menu-categories" class="btn">VIEW DRINKS</a>
       </div>
     </article>
 
-    <article class="promo-slide"
-      style="background-image:url('https://images.unsplash.com/photo-1562967914-608f82629710?w=1400')">
-      <div class="promo-copy">
-        <div class="eyebrow">GOOD TIMES START HERE</div>
-        <h3>Food, Friends &amp; Feel-Good Moments</h3>
-        <p>Place your order for delivery or choose collection. We are ready to serve you.</p>
-        <a href="#menu" class="btn">ORDER YOUR FAVOURITES</a>
-      </div>
-    </article>
+    <button class="promo-arrow prev" onclick="changePromoSlide(-1)">&#10094;</button>
+    <button class="promo-arrow next" onclick="changePromoSlide(1)">&#10095;</button>
 
-    <button class="promo-arrow prev" type="button"
-      aria-label="Previous slide" onclick="changePromoSlide(-1)">‹</button>
+    <div class="promo-dots" id="promo-dots"></div>
 
-    <button class="promo-arrow next" type="button"
-      aria-label="Next slide" onclick="changePromoSlide(1)">›</button>
+  </div>
+</section>
 
-    <div class="promo-dots">
-      <button class="promo-dot active" onclick="showPromoSlide(0)" aria-label="Slide 1"></button>
-      <button class="promo-dot" onclick="showPromoSlide(1)" aria-label="Slide 2"></button>
-      <button class="promo-dot" onclick="showPromoSlide(2)" aria-label="Slide 3"></button>
-      <button class="promo-dot" onclick="showPromoSlide(3)" aria-label="Slide 4"></button>
-      <button class="promo-dot" onclick="showPromoSlide(4)" aria-label="Slide 5"></button>
-      <button class="promo-dot" onclick="showPromoSlide(5)" aria-label="Slide 6"></button>
-      <button class="promo-dot" onclick="showPromoSlide(6)" aria-label="Slide 7"></button>
-      <button class="promo-dot" onclick="showPromoSlide(7)" aria-label="Slide 8"></button>
-      <button class="promo-dot" onclick="showPromoSlide(8)" aria-label="Slide 9"></button>
+<!-- FOOD AND DRINKS CHOICES -->
+
+<section class="menu-section" id="menu-categories">
+
+  <div class="section-heading">
+    <h2>Choose Your Menu</h2>
+    <p>Select a category to see what we have available.</p>
+  </div>
+
+  <div class="category-choices">
+    <button class="category-choice active"
+      id="food-tab"
+      onclick="showCategory('food')">
+      FOOD
+    </button>
+
+    <button class="category-choice"
+      id="drinks-tab"
+      onclick="showCategory('drinks')">
+      DRINKS
+    </button>
+  </div>
+
+  <div class="category-page active" id="food-page">
+    <div class="section-heading">
+      <h2>Our Food Menu</h2>
+      <p>Fresh meals prepared to give you a satisfying experience.</p>
     </div>
-
-  </div>
-</section>
-
-<!-- FOOD MENU: MENU ITEMS ONLY -->
-
-<section class="menu-section" id="menu">
-
-  <div class="section-heading">
-    <h2>Our Food Menu</h2>
+    <div class="products" id="food-products"></div>
   </div>
 
-  <div class="products" id="food-products"></div>
+  <div class="category-page" id="drinks-page">
+    <div class="section-heading">
+      <h2>Our Drinks</h2>
+      <p>Refresh yourself with our selection of drinks.</p>
+    </div>
+    <div class="products" id="drink-products"></div>
+  </div>
 
 </section>
 
-<!-- DRINKS MENU: DRINK ITEMS ONLY -->
-
-<section class="menu-section" id="drinks">
-
-  <div class="section-heading">
-    <h2>Our Drinks</h2>
-  </div>
-
-  <div class="products" id="drink-products"></div>
-
-</section>
-
-<!-- CONTACT SECTION -->
+<!-- CONTACT -->
 
 <section class="info-section" id="contact">
 
@@ -740,7 +664,8 @@ footer a {
   <p style="margin-top:30px">
     <a class="btn"
        href="https://wa.me/2349037576372"
-       target="_blank">
+       target="_blank"
+       rel="noopener">
       CHAT WITH US ON WHATSAPP
     </a>
   </p>
@@ -748,6 +673,8 @@ footer a {
 </section>
 
 </main>
+
+<!-- FOOTER -->
 
 <footer>
   <h2>ALES PLACE</h2>
@@ -762,46 +689,71 @@ footer a {
   </p>
 </footer>
 
-<!-- CART PANEL -->
+<!-- ORDER WINDOW -->
 
-<div class="cart-panel" id="cart-panel">
+<div class="order-modal" id="order-modal">
+  <div class="order-box">
 
-  <button class="close" onclick="closeCart()">×</button>
+    <button class="close-modal" onclick="closeOrderModal()">×</button>
 
-  <h2>Your Cart</h2>
+    <h2>Complete Your Order</h2>
+    <p id="selected-product"></p>
 
-  <div id="cart-items">
-    <p class="empty">Your cart is empty.</p>
+    <input
+      type="text"
+      id="customer-name"
+      placeholder="Enter your name">
+
+    <p>How would you like to receive your order?</p>
+
+    <button class="fulfilment-button delivery-button"
+      onclick="sendOrder('DELIVERY')">
+      DELIVERY
+    </button>
+
+    <button class="fulfilment-button collection-button"
+      onclick="sendOrder('COLLECTION')">
+      COLLECTION
+    </button>
+
   </div>
-
-  <div class="cart-total" id="cart-total"></div>
-
-  <button class="whatsapp" onclick="checkout()">
-    ORDER THROUGH WHATSAPP
-  </button>
-
 </div>
 
-<div class="cart-toast" id="cart-toast">
-  Added to cart successfully!
+<div class="order-toast" id="order-toast">
+  Opening WhatsApp...
 </div>
 
 <script>
+
+/* WHATSAPP NUMBER */
+
+const WHATSAPP_NUMBER = "2349037576372";
 
 /* SLIDESHOW */
 
 let currentPromoSlide = 0;
 let promoTimer;
 
+const slides = document.querySelectorAll(".promo-slide");
+const dotsContainer = document.getElementById("promo-dots");
+
+slides.forEach((slide, index) => {
+  const dot = document.createElement("button");
+  dot.className = "promo-dot" + (index === 0 ? " active" : "");
+  dot.setAttribute("aria-label", "Show image " + (index + 1));
+  dot.onclick = () => showPromoSlide(index);
+  dotsContainer.appendChild(dot);
+});
+
 function showPromoSlide(index) {
-  const slides = document.querySelectorAll(".promo-slide");
+  const allSlides = document.querySelectorAll(".promo-slide");
   const dots = document.querySelectorAll(".promo-dot");
 
-  if (!slides.length) return;
+  if (!allSlides.length) return;
 
-  currentPromoSlide = (index + slides.length) % slides.length;
+  currentPromoSlide = (index + allSlides.length) % allSlides.length;
 
-  slides.forEach((slide, i) => {
+  allSlides.forEach((slide, i) => {
     slide.classList.toggle("active", i === currentPromoSlide);
   });
 
@@ -818,17 +770,12 @@ function changePromoSlide(direction) {
 
 function restartPromoTimer() {
   clearInterval(promoTimer);
-
   promoTimer = setInterval(() => {
     showPromoSlide(currentPromoSlide + 1);
   }, 5000);
 }
 
-/* WHATSAPP NUMBER */
-
-const WHATSAPP_NUMBER = "2349037576372";
-
-/* FOOD ITEMS */
+/* FOOD MENU */
 
 const food = [
   {
@@ -873,7 +820,7 @@ const food = [
   }
 ];
 
-/* DRINK ITEMS */
+/* DRINKS MENU */
 
 const drinks = [
   {
@@ -928,28 +875,26 @@ const drinks = [
   }
 ];
 
-/* CART */
-
-let cart = [];
-let customerName = "";
-let toastTimer;
+/* DISPLAY PRICES */
 
 function money(amount) {
   return "₦" + amount.toLocaleString("en-NG");
 }
 
+/* DISPLAY PRODUCTS */
+
 function displayProducts(containerId, products, category) {
   const container = document.getElementById(containerId);
 
   container.innerHTML = products.map((product, index) => `
-    <div class="product">
+    <article class="product">
 
       <div class="product-image">
         <img
           src="${product.image}"
           alt="${product.name}"
           loading="lazy"
-          onerror="this.onerror=null;this.src='https://placehold.co/700x450/f4e8e5/b5121b?text=${encodeURIComponent(product.name)}';">
+          onerror="this.onerror=null;this.src='https://placehold.co/700x450/f4e8e5/b5121b?text=Image+Unavailable';">
       </div>
 
       <div class="product-details">
@@ -960,296 +905,98 @@ function displayProducts(containerId, products, category) {
         </div>
 
         <button
-          class="add"
-          id="${category}-button-${index}"
-          onclick="toggleCartItem('${category}', ${index})">
-          ADD TO CART
+          class="order-now"
+          onclick="openOrderModal('${category}', ${index})">
+          ORDER ON WHATSAPP
         </button>
       </div>
 
-    </div>
+    </article>
   `).join("");
 }
 
-/* ADD TO CART BUTTON TOGGLE */
+/* SWITCH BETWEEN FOOD AND DRINKS */
 
-function toggleCartItem(category, index) {
+function showCategory(category) {
+  const isFood = category === "food";
+
+  document.getElementById("food-page").classList.toggle("active", isFood);
+  document.getElementById("drinks-page").classList.toggle("active", !isFood);
+
+  document.getElementById("food-tab").classList.toggle("active", isFood);
+  document.getElementById("drinks-tab").classList.toggle("active", !isFood);
+}
+
+/* ORDER DETAILS */
+
+let selectedOrder = null;
+
+function openOrderModal(category, index) {
   const products = category === "food" ? food : drinks;
-  const product = products[index];
+  selectedOrder = products[index];
 
-  const existingIndex = cart.findIndex(item =>
-    item.category === category && item.name === product.name
-  );
+  document.getElementById("selected-product").textContent =
+    selectedOrder.name + " - " + money(selectedOrder.price);
 
-  const button = document.getElementById(`${category}-button-${index}`);
+  document.getElementById("customer-name").value = "";
 
-  if (existingIndex !== -1) {
-    cart.splice(existingIndex, 1);
-
-    button.textContent = "ADD TO CART";
-    button.classList.remove("selected");
-
-    updateCart();
-    return;
-  }
-
-  cart.push({
-    ...product,
-    category: category,
-    quantity: 1
-  });
-
-  button.textContent = "ADDED ✓";
-  button.classList.add("selected");
-
-  updateCart();
-  showCartToast(product.name);
+  document.getElementById("order-modal").classList.add("show");
 }
 
-/* SUCCESS MESSAGE */
-
-function showCartToast(productName) {
-  const toast = document.getElementById("cart-toast");
-
-  toast.textContent = productName + " added to cart successfully!";
-  toast.classList.add("show");
-
-  clearTimeout(toastTimer);
-
-  toastTimer = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2500);
-}
-
-/* UPDATE CART */
-
-function updateCart() {
-  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  document.getElementById("cart-count").textContent = count;
-
-  const items = document.getElementById("cart-items");
-  const totalElement = document.getElementById("cart-total");
-
-  if (cart.length === 0) {
-    items.innerHTML = '<p class="empty">Your cart is empty.</p>';
-    totalElement.textContent = "";
-    return;
-  }
-
-  items.innerHTML = cart.map((item, index) => `
-    <div class="cart-line">
-
-      <div>
-        <strong>${item.name}</strong><br>
-        <small>${money(item.price)} each</small>
-
-        <div class="quantity-controls">
-          <button onclick="changeQuantity(${index}, -1)">−</button>
-          <span>${item.quantity}</span>
-          <button onclick="changeQuantity(${index}, 1)">+</button>
-        </div>
-
-        <small>
-          Subtotal: ${money(item.price * item.quantity)}
-        </small>
-      </div>
-
-      <button onclick="removeItem(${index})">
-        Remove
-      </button>
-
-    </div>
-  `).join("");
-
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
-  totalElement.textContent = "Total: " + money(total);
-}
-
-/* CHANGE QUANTITY */
-
-function changeQuantity(index, change) {
-  if (!cart[index]) return;
-
-  cart[index].quantity += change;
-
-  if (cart[index].quantity <= 0) {
-    removeItem(index);
-    return;
-  }
-
-  updateCart();
-}
-
-/* REMOVE ITEM */
-
-function removeItem(index) {
-  const removedItem = cart[index];
-
-  if (!removedItem) return;
-
-  const category = removedItem.category;
-  const products = category === "food" ? food : drinks;
-  const productIndex = products.findIndex(
-    product => product.name === removedItem.name
-  );
-
-  cart.splice(index, 1);
-
-  const button = document.getElementById(
-    `${category}-button-${productIndex}`
-  );
-
-  if (button) {
-    button.textContent = "ADD TO CART";
-    button.classList.remove("selected");
-  }
-
-  updateCart();
-}
-
-/* OPEN AND CLOSE CART */
-
-function openCart() {
-  document.getElementById("cart-panel").classList.add("open");
-}
-
-function closeCart() {
-  document.getElementById("cart-panel").classList.remove("open");
-}
-
-/* CHECKOUT */
-
-function checkout() {
-  if (cart.length === 0) {
-    alert("Your cart is empty.");
-    return;
-  }
-
-  customerName = prompt("Please enter your name:");
-
-  if (!customerName || !customerName.trim()) {
-    return;
-  }
-
-  const panel = document.getElementById("cart-panel");
-
-  panel.innerHTML = `
-    <button class="close" onclick="restoreCart()">×</button>
-
-    <h2>Choose Fulfilment</h2>
-
-    <p style="margin:20px 0">
-      Hello ${escapeHTML(customerName.trim())}, how would you like to receive your order?
-    </p>
-
-    <button class="delivery-choice delivery"
-      onclick="completeOrder('DELIVERY')">
-      🚚 DELIVERY
-    </button>
-
-    <button class="delivery-choice collection"
-      onclick="completeOrder('COLLECTION')">
-      🛍 COLLECTION
-    </button>
-
-    <p style="margin-top:20px;color:#666;font-size:13px">
-      Select your preferred option to continue to WhatsApp.
-    </p>
-  `;
-}
-
-function escapeHTML(value) {
-  return value.replace(/[&<>"']/g, function(char) {
-    return {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    }[char];
-  });
-}
-
-/* RESTORE CART */
-
-function restoreCart() {
-  const panel = document.getElementById("cart-panel");
-
-  panel.innerHTML = `
-    <button class="close" onclick="closeCart()">×</button>
-
-    <h2>Your Cart</h2>
-
-    <div id="cart-items"></div>
-
-    <div class="cart-total" id="cart-total"></div>
-
-    <button class="whatsapp" onclick="checkout()">
-      ORDER THROUGH WHATSAPP
-    </button>
-  `;
-
-  updateCart();
+function closeOrderModal() {
+  document.getElementById("order-modal").classList.remove("show");
 }
 
 /* SEND ORDER TO WHATSAPP */
 
-function completeOrder(choice) {
-  let message =
-    "Hello Ales Grill & Chill! I would like to place an order.\n\n";
+function sendOrder(fulfilment) {
+  const customerName = document.getElementById("customer-name").value.trim();
 
-  message += "Name: " + customerName.trim() + "\n";
-  message += "Fulfilment: " + choice + "\n\n";
-  message += "MY ORDER:\n";
-
-  cart.forEach(item => {
-    const subtotal = item.price * item.quantity;
-
-    message +=
-      item.name +
-      " x " + item.quantity +
-      " - " + money(subtotal) +
-      "\n";
-  });
-
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
-  message += "\nTotal: " + money(total);
-
-  if (choice === "DELIVERY") {
-    message += "\nPlease let me know the delivery fee and next steps.";
+  if (!customerName) {
+    alert("Please enter your name.");
+    document.getElementById("customer-name").focus();
+    return;
   }
 
-  if (choice === "COLLECTION") {
-    message += "\nI would like to collect my order. Please let me know when it will be ready.";
+  if (!selectedOrder) return;
+
+  let message = "Hello Ales Grill & Chill! I would like to place an order.\n\n";
+
+  message += "Name: " + customerName + "\n";
+  message += "Fulfilment: " + fulfilment + "\n\n";
+  message += "Order: " + selectedOrder.name + "\n";
+  message += "Price: " + money(selectedOrder.price) + "\n\n";
+
+  if (fulfilment === "DELIVERY") {
+    message += "Please let me know the delivery fee and next steps.";
+  } else {
+    message += "I would like to collect my order. Please let me know when it will be ready.";
   }
 
   message += "\n\nPlease confirm my order. Thank you!";
 
-  const url =
-    "https://wa.me/" +
-    WHATSAPP_NUMBER +
-    "?text=" +
-    encodeURIComponent(message);
+  const whatsappURL =
+    "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
 
-  window.open(url, "_blank");
+  window.open(whatsappURL, "_blank");
+
+  closeOrderModal();
+
+  const toast = document.getElementById("order-toast");
+  toast.textContent = "Opening WhatsApp to order " + selectedOrder.name + "...";
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
 }
 
-/* LOAD EVERYTHING */
+/* LOAD THE WEBSITE */
 
 displayProducts("food-products", food, "food");
-displayProducts("drink-products", drinks, "drink");
+displayProducts("drink-products", drinks, "drinks");
 
 showPromoSlide(0);
-updateCart();
 
 document.getElementById("year").textContent =
   new Date().getFullYear();
