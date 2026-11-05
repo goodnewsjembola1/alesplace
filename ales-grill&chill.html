@@ -659,7 +659,8 @@ footer a {
 
 .order-box p { margin-bottom: 15px; }
 
-.order-box input {
+.order-box input,
+.order-box textarea {
   width: 100%;
   padding: 13px;
   border: 1px solid #ccc;
@@ -1094,23 +1095,30 @@ footer a {
     <button class="close-modal" onclick="closeOrderModal()">×</button>
 
     <h2>Complete Your Order</h2>
-    <p>Please enter your name to continue.</p>
+    <p>Please enter your contact details to continue.</p>
 
-    <input
-      type="text"
-      id="customer-name"
-      placeholder="Enter your name"
-      autocomplete="name">
+    <input type="text" id="customer-name" placeholder="Enter your full name" autocomplete="name" required>
+    <input type="tel" id="customer-phone" placeholder="Enter your phone number" autocomplete="tel" required>
+
+    <div id="delivery-address-wrap" style="text-align:left">
+      <label for="delivery-address" style="display:block;margin-bottom:6px;font-weight:bold">Delivery address (required for delivery)</label>
+      <textarea id="delivery-address" placeholder="Enter your complete delivery address" rows="3" style="width:100%;padding:13px;border:1px solid #ccc;border-radius:5px;font:inherit;resize:vertical;margin-bottom:15px"></textarea>
+    </div>
+
+    <div style="text-align:left">
+      <label for="order-notes" style="display:block;margin-bottom:6px;font-weight:bold">Order notes (optional)</label>
+      <textarea id="order-notes" placeholder="Any special instructions?" rows="2" style="width:100%;padding:13px;border:1px solid #ccc;border-radius:5px;font:inherit;resize:vertical"></textarea>
+    </div>
 
     <p>How would you like to receive your order?</p>
 
     <button class="fulfilment-button delivery-button"
-      onclick="sendOrder('DELIVERY')">
+      onclick="sendOrder('delivery')">
       DELIVERY
     </button>
 
     <button class="fulfilment-button collection-button"
-      onclick="sendOrder('COLLECTION')">
+      onclick="sendOrder('collection')">
       COLLECTION
     </button>
 
@@ -1316,17 +1324,19 @@ function addToCart(category, index) {
   const product = products[index];
 
   const existingItem = cart.find(item =>
-    item.name === product.name && item.category === category
+    item.product_id === product.id && item.category === category
   );
 
   if (existingItem) {
     existingItem.quantity++;
   } else {
     cart.push({
+      product_id: product.id,
       name: product.name,
       price: product.price,
       image: product.image,
       category: category,
+      variation: null,
       quantity: 1
     });
   }
@@ -1499,6 +1509,9 @@ function openCheckout() {
   }
 
   document.getElementById("customer-name").value = "";
+  document.getElementById("customer-phone").value = "";
+  document.getElementById("delivery-address").value = "";
+  document.getElementById("order-notes").value = "";
   document.getElementById("order-modal").classList.add("show");
 }
 
@@ -1508,14 +1521,34 @@ function closeOrderModal() {
   document.getElementById("order-modal").classList.remove("show");
 }
 
-/* SEND COMPLETE CART ORDER TO WHATSAPP */
+/* SAVE COMPLETE CART ORDER TO SUPABASE, THEN OPEN WHATSAPP */
 
-function sendOrder(fulfilment) {
+async function sendOrder(fulfilment) {
   const customerName = document.getElementById("customer-name").value.trim();
+  const customerPhone = document.getElementById("customer-phone").value.trim();
+  const deliveryAddress = document.getElementById("delivery-address").value.trim();
+  const orderNotes = document.getElementById("order-notes").value.trim();
 
   if (!customerName) {
     alert("Please enter your name.");
     document.getElementById("customer-name").focus();
+    return;
+  }
+
+  if (!customerPhone) {
+    alert("Please enter your phone number.");
+    document.getElementById("customer-phone").focus();
+    return;
+  }
+
+  if (fulfilment === "delivery" && !deliveryAddress) {
+    alert("Please enter your delivery address.");
+    document.getElementById("delivery-address").focus();
+    return;
+  }
+
+  if (!["delivery", "collection"].includes(fulfilment)) {
+    alert("Please select delivery or collection.");
     return;
   }
 
@@ -1525,60 +1558,90 @@ function sendOrder(fulfilment) {
     return;
   }
 
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
+  if (!window.alesSupabase) {
+    alert("The order service is unavailable. Please refresh the page and try again.");
+    return;
+  }
+
+  const orderItems = cart.map(item => ({
+    product_id: item.product_id,
+    quantity: item.quantity,
+    variation: item.variation || null
+  }));
+
+  if (orderItems.some(item => !item.product_id)) {
+    alert("One or more items could not be verified. Please refresh the menu, add the items again, and retry.");
+    return;
+  }
+
+  // Open a blank tab immediately so the browser does not block WhatsApp after saving.
+  const whatsappWindow = window.open("about:blank", "_blank");
+
+  const { data: savedOrder, error: saveError } = await window.alesSupabase.rpc(
+    "submit_customer_order",
+    {
+      p_business_slug: "ales-grill-chill",
+      p_customer_name: customerName,
+      p_customer_phone: customerPhone,
+      p_fulfilment: fulfilment,
+      p_delivery_address: fulfilment === "delivery" ? deliveryAddress : null,
+      p_notes: orderNotes || null,
+      p_items: orderItems
+    }
   );
 
-  let message = "Hello Ales Grill & Chill! I would like to place an order.\n\n";
+  if (saveError || !savedOrder || !savedOrder.success) {
+    if (whatsappWindow) whatsappWindow.close();
+    console.error("Order submission failed:", saveError || savedOrder);
+    alert(
+      "We could not save your order to our order system. Your cart has been kept. Please try again." +
+      (saveError && saveError.message ? "\\n\\nDetails: " + saveError.message : "")
+    );
+    return;
+  }
 
-  message += "Name: " + customerName + "\n";
-  message += "Fulfilment: " + fulfilment + "\n\n";
-  message += "MY ORDER:\n";
+  const orderNumber = savedOrder.order_number;
+  const confirmedTotal = Number(savedOrder.total_ngn);
+
+  let message = "Hello Ales Grill & Chill! I have submitted an order.\\n\\n";
+  message += "Order number: " + orderNumber + "\\n";
+  message += "Name: " + customerName + "\\n";
+  message += "Phone: " + customerPhone + "\\n";
+  message += "Fulfilment: " + fulfilment.toUpperCase() + "\\n";
+  if (fulfilment === "delivery") message += "Delivery address: " + deliveryAddress + "\\n";
+  if (orderNotes) message += "Order notes: " + orderNotes + "\\n";
+  message += "\\nMY ORDER:\\n";
 
   cart.forEach((item, index) => {
-    message +=
-      (index + 1) + ". " +
-      item.name +
-      "\nQuantity: " + item.quantity +
-      "\nPrice each: " + money(item.price) +
-      "\nSubtotal: " + money(item.price * item.quantity) +
-      "\n\n";
+    message += (index + 1) + ". " + item.name +
+      (item.variation ? " (" + item.variation + ")" : "") +
+      "\\nQuantity: " + item.quantity +
+      "\\nPrice each: " + money(item.price) +
+      "\\nSubtotal: " + money(item.price * item.quantity) + "\\n\\n";
   });
 
   message += "TOTAL ITEMS: " +
-    cart.reduce((sum, item) => sum + item.quantity, 0) + "\n";
+    cart.reduce((sum, item) => sum + item.quantity, 0) + "\\n";
+  message += "TOTAL AMOUNT: " + money(confirmedTotal) + "\\n\\n";
+  message += fulfilment === "delivery"
+    ? "Please confirm the delivery fee and next steps."
+    : "I would like to collect my order. Please let me know when it will be ready.";
+  message += "\\n\\nPlease confirm my order. Thank you!";
 
-  message += "TOTAL AMOUNT: " + money(totalPrice) + "\n\n";
+  const whatsappURL = "https://wa.me/" + WHATSAPP_NUMBER +
+    "?text=" + encodeURIComponent(message);
 
-  if (fulfilment === "DELIVERY") {
-    message += "Please let me know the delivery fee and next steps.";
+  if (whatsappWindow) {
+    whatsappWindow.location.href = whatsappURL;
   } else {
-    message += "I would like to collect my order. Please let me know when it will be ready.";
-  }
-
-  message += "\n\nPlease confirm my order. Thank you!";
-
-  const whatsappURL =
-    "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
-
-  const whatsappWindow = window.open(whatsappURL, "_blank");
-
-  if (!whatsappWindow) {
-    showToast("Please allow pop-ups or use the WhatsApp link.");
     window.location.href = whatsappURL;
-    return;
   }
 
   closeOrderModal();
   closeCart();
-
-  showToast("Your order is ready on WhatsApp!");
-
-  /* CLEAR CART AFTER OPENING WHATSAPP */
-
   cart = [];
   updateCart();
+  showToast("Order " + orderNumber + " saved successfully. Opening WhatsApp…");
 }
 
 /* CLOSE CHECKOUT WHEN CLICKING OUTSIDE THE BOX */
