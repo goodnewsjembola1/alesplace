@@ -107,7 +107,7 @@ section { padding: 65px 7%; }
 
 .btn:hover { background: var(--dark-red); }
 
-/* PROMOTION AND HIGHLIGHT PRESENTATION */
+PROMOTION AND HIGHLIGHT PRESENTATION
 
 .presentation { background: white; }
 
@@ -117,8 +117,8 @@ section { padding: 65px 7%; }
   min-height: 430px;
   overflow: hidden;
   border-radius: 12px;
-  background: #171717;
-  box-shadow: 0 12px 35px #0000001c;
+  /* background: #171717; */
+  /* box-shadow: 0 12px 35px #0000001c;  */
 }
 
 .promo-slide {
@@ -129,8 +129,9 @@ section { padding: 65px 7%; }
   opacity: 0;
   visibility: hidden;
   transition: opacity .7s ease, visibility .7s ease;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
 .promo-slide.active {
@@ -142,7 +143,7 @@ section { padding: 65px 7%; }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #000c 0%, #0008 48%, #0002 100%);
+  /* background: linear-gradient(90deg, #000c 0%, #0008 48%, #0002 100%); */
 }
 
 .promo-copy {
@@ -828,7 +829,7 @@ footer a {
         <!-- <div class="eyebrow">WELCOME TO ALES GRILL &amp; CHILL</div> -->
         <!-- <h3>Good Food. Great Drinks. Good Times.</h3> -->
         <!-- <p>Enjoy delicious meals, refreshing drinks and a wonderful experience.</p> -->
-        <a href="#menu-categories" class="btn">EXPLORE OUR MENU</a>
+        <!-- <a href="#menu-categories" class="btn">EXPLORE OUR MENU</a> -->
       </div>
     </article>
 
