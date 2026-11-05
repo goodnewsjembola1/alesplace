@@ -1595,39 +1595,73 @@ async function sendOrder(fulfilment) {
     console.error("Order submission failed:", saveError || savedOrder);
     alert(
       "We could not save your order to our order system. Your cart has been kept. Please try again." +
-      (saveError && saveError.message ? "\\n\\nDetails: " + saveError.message : "")
+      (saveError && saveError.message ? "\n\nDetails: " + saveError.message : "")
     );
     return;
   }
 
   const orderNumber = savedOrder.order_number;
   const confirmedTotal = Number(savedOrder.total_ngn);
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  let message = "Hello Ales Grill & Chill! I have submitted an order.\\n\\n";
-  message += "Order number: " + orderNumber + "\\n";
-  message += "Name: " + customerName + "\\n";
-  message += "Phone: " + customerPhone + "\\n";
-  message += "Fulfilment: " + fulfilment.toUpperCase() + "\\n";
-  if (fulfilment === "delivery") message += "Delivery address: " + deliveryAddress + "\\n";
-  if (orderNotes) message += "Order notes: " + orderNotes + "\\n";
-  message += "\\nMY ORDER:\\n";
+  const messageLines = [
+    "🍽️ *ALES GRILL & CHILL*",
+    "*NEW CUSTOMER ORDER*",
+    "━━━━━━━━━━━━━━━━━━",
+    "",
+    "🧾 *ORDER DETAILS*",
+    "Order Number: " + orderNumber,
+    "",
+    "👤 *CUSTOMER INFORMATION*",
+    "Name: " + customerName,
+    "Phone: " + customerPhone,
+    "",
+    "📦 *FULFILMENT*",
+    "Method: " + (fulfilment === "delivery" ? "DELIVERY" : "COLLECTION")
+  ];
+
+  if (fulfilment === "delivery") {
+    messageLines.push("Delivery Address: " + deliveryAddress);
+  }
+
+  messageLines.push(
+    "",
+    "🍔 *ORDER SUMMARY*",
+    ""
+  );
 
   cart.forEach((item, index) => {
-    message += (index + 1) + ". " + item.name +
-      (item.variation ? " (" + item.variation + ")" : "") +
-      "\\nQuantity: " + item.quantity +
-      "\\nPrice each: " + money(item.price) +
-      "\\nSubtotal: " + money(item.price * item.quantity) + "\\n\\n";
+    messageLines.push(
+      (index + 1) + ". *" + item.name + "*" +
+        (item.variation ? " (" + item.variation + ")" : ""),
+      "   Quantity: " + item.quantity,
+      "   Unit Price: " + money(item.price),
+      "   Subtotal: " + money(item.price * item.quantity),
+      ""
+    );
   });
 
-  message += "TOTAL ITEMS: " +
-    cart.reduce((sum, item) => sum + item.quantity, 0) + "\\n";
-  message += "TOTAL AMOUNT: " + money(confirmedTotal) + "\\n\\n";
-  message += fulfilment === "delivery"
-    ? "Please confirm the delivery fee and next steps."
-    : "I would like to collect my order. Please let me know when it will be ready.";
-  message += "\\n\\nPlease confirm my order. Thank you!";
+  messageLines.push(
+    "━━━━━━━━━━━━━━━━━━",
+    "Total Items: " + totalItems,
+    "💰 *TOTAL: " + money(confirmedTotal) + "*"
+  );
 
+  if (orderNotes) {
+    messageLines.push("", "📝 *CUSTOMER NOTES*", orderNotes);
+  }
+
+  messageLines.push(
+    "",
+    "━━━━━━━━━━━━━━━━━━",
+    fulfilment === "delivery"
+      ? "Please confirm the delivery fee and next steps."
+      : "Please let me know when my order will be ready for collection.",
+    "",
+    "Thank you for choosing *Ales Grill & Chill*! ❤️"
+  );
+
+  const message = messageLines.join("\n");
   const whatsappURL = "https://wa.me/" + WHATSAPP_NUMBER +
     "?text=" + encodeURIComponent(message);
 
