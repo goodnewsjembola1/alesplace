@@ -141,6 +141,64 @@
       background: #eee;
     }
 
+    .thread-products {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .thread-product {
+      background: #fff;
+      border: 1px solid #e9dfcc;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 5px 18px rgba(0,0,0,.05);
+    }
+
+    .thread-product img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      display: block;
+      background: #eee;
+    }
+
+    .thread-product-info { padding: 18px; }
+    .thread-product-info h3 {
+      margin: 0 0 7px;
+      color: #8a6a30;
+      font-family: Georgia, serif;
+    }
+    .thread-product-info p {
+      color: #746d62;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 7px 0;
+    }
+    .thread-product-price {
+      font-weight: bold;
+      margin: 12px 0;
+      color: #8a6a30;
+    }
+    .thread-enquire {
+      display: block;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      padding: 12px;
+      background: #d5b46d;
+      color: #17130c;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+    }
+    .thread-loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #746d62;
+      padding: 25px;
+    }
+
     .enquiry {
       background: #111;
       color: white;
@@ -261,17 +319,18 @@
     }
 
     @media (max-width: 750px) {
-      .services, .gallery {
+      .services, .gallery, .thread-products {
         grid-template-columns: 1fr 1fr;
       }
 
       .gallery img { height: 230px; }
+      .thread-product img { height: 230px; }
     }
 
     @media (max-width: 520px) {
       header { justify-content: center; }
 
-      .services, .gallery {
+      .services, .gallery, .thread-products {
         grid-template-columns: 1fr;
       }
 
@@ -365,6 +424,14 @@
       <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=700&q=85" alt="Women's fashion inspiration">
 
       <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=700&q=85" alt="Fashion outfit inspiration">
+    </div>
+  </section>
+
+  <section class="container" id="shop">
+    <h2 class="section-title">Shop Ales Thread</h2>
+    <p class="intro">Explore available pieces from Ales Thread. Select an item to enquire about it on WhatsApp.</p>
+    <div id="thread-products" class="thread-products">
+      <p class="thread-loading">Loading available pieces…</p>
     </div>
   </section>
 
@@ -467,6 +534,78 @@
 
   let customerEnquiry = {};
 
+  function escapeThreadText(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[character]));
+  }
+
+  async function loadAlesThreadProducts() {
+    const container = document.getElementById("thread-products");
+
+    if (!window.alesSupabase) {
+      container.innerHTML = '<p class="thread-loading">The product list is temporarily unavailable. Please try again later.</p>';
+      return;
+    }
+
+    const { data: business, error: businessError } = await window.alesSupabase
+      .from("businesses")
+      .select("id")
+      .eq("slug", "ales-thread")
+      .eq("is_active", true)
+      .single();
+
+    if (businessError || !business) {
+      container.innerHTML = '<p class="thread-loading">We could not load available pieces right now.</p>';
+      console.error("Ales Thread business lookup failed:", businessError);
+      return;
+    }
+
+    const { data: products, error } = await window.alesSupabase
+      .from("products")
+      .select("id,name,description,category,price_ngn,image_url")
+      .eq("business_id", business.id)
+      .eq("is_active", true)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      container.innerHTML = '<p class="thread-loading">We could not load available pieces right now.</p>';
+      console.error("Ales Thread products lookup failed:", error);
+      return;
+    }
+
+    if (!products || products.length === 0) {
+      container.innerHTML = '<p class="thread-loading">New pieces will be available here soon. Please check back later.</p>';
+      return;
+    }
+
+    container.innerHTML = products.map(product => {
+      const name = escapeThreadText(product.name);
+      const description = escapeThreadText(product.description || "");
+      const category = escapeThreadText(product.category || "Fashion");
+      const image = escapeThreadText(product.image_url || "https://placehold.co/700x450/f4eee2/8a6a30?text=Ales+Thread");
+      const price = Number(product.price_ngn || 0).toLocaleString("en-NG");
+      const message = encodeURIComponent(
+        "Hello Ales Thread! I am interested in this product: " + product.name +
+        ". Price: ₦" + price + ". Please share more details. Thank you."
+      );
+
+      return `
+        <article class="thread-product">
+          <img src="${image}" alt="${name}" loading="lazy"
+            onerror="this.onerror=null;this.src='https://placehold.co/700x450/f4eee2/8a6a30?text=Ales+Thread';">
+          <div class="thread-product-info">
+            <h3>${name}</h3>
+            <p>${category}</p>
+            ${description ? '<p>' + description + '</p>' : ''}
+            <div class="thread-product-price">₦${price}</div>
+            <a class="thread-enquire" href="https://wa.me/2348125006317?text=${message}" target="_blank" rel="noopener">ENQUIRE ON WHATSAPP</a>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
   function showDeliveryOptions(event) {
 
     event.preventDefault();
@@ -518,6 +657,7 @@
   }
 
   document.getElementById("year").textContent = new Date().getFullYear();
+  loadAlesThreadProducts();
 
 </script>
 
