@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ales Place | Admin Dashboard</title>
+<style>
+:root{--ink:#171717;--muted:#777;--paper:#f7f5f0;--card:#fff;--line:#e9e5dc;--red:#b5121b;--gold:#c5a568;--green:#16794b;--shadow:0 8px 28px rgba(0,0,0,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#171717,#3b2924)}.login-card{width:min(420px,100%);background:#fff;padding:34px;border-radius:16px;box-shadow:var(--shadow)}.brand{font-family:Georgia,serif;letter-spacing:2px;font-size:25px;margin:0 0 5px}.sub{color:var(--muted);margin:0 0 25px;font-size:14px}.field{display:grid;gap:7px;margin:0 0 15px}.field label{font-size:13px;font-weight:700}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff;color:var(--ink)}.field textarea{min-height:82px;resize:vertical}.primary{border:0;background:var(--red);color:white;padding:12px 17px;border-radius:8px;font-weight:700}.primary:disabled{opacity:.55;cursor:not-allowed}.full{width:100%}.message{font-size:13px;margin-top:12px;color:#b42318;min-height:18px}
+.app{min-height:100vh}.topbar{height:70px;background:#171717;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:5}.topbar .brand{font-size:22px}.topbar small{color:#d8c49c;letter-spacing:1px}.logout{background:transparent;border:1px solid #777;color:#fff;border-radius:7px;padding:9px 13px}.layout{display:grid;grid-template-columns:225px 1fr;min-height:calc(100vh - 70px)}.sidebar{background:#fff;border-right:1px solid var(--line);padding:22px 14px}.nav-btn{display:flex;width:100%;border:0;background:transparent;text-align:left;padding:13px 14px;border-radius:8px;margin-bottom:5px;color:#555;font-weight:700}.nav-btn.active,.nav-btn:hover{background:#f8eeee;color:var(--red)}.main{padding:28px;min-width:0;max-width:1500px;width:100%;margin:auto}.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:22px}.page-head h1{font-size:25px;margin:0 0 6px}.muted{color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:22px}.stat,.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--shadow)}.stat span{display:block;color:var(--muted);font-size:13px}.stat strong{display:block;font-size:27px;margin-top:9px}.panel{margin-bottom:18px}.panel h2{font-size:17px;margin:0 0 16px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}.toolbar input,.toolbar select{border:1px solid var(--line);border-radius:8px;padding:10px;background:white}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:680px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}th{color:#777;font-size:11px;text-transform:uppercase;letter-spacing:.5px}td strong{font-size:13px}.status{display:inline-block;padding:5px 8px;border-radius:30px;background:#f3f0e8;font-size:11px;font-weight:700}.status.pending{background:#fff1d6;color:#805400}.status.delivered,.status.confirmed{background:#e5f5eb;color:#17633c}.status.cancelled{background:#fde8e7;color:#a52822}.small-btn{border:1px solid var(--line);background:#fff;border-radius:7px;padding:7px 10px;font-size:12px;font-weight:700}.small-btn:hover{border-color:var(--red);color:var(--red)}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}.form-grid .wide{grid-column:1/-1}.actions{display:flex;gap:8px;align-items:center}.empty{padding:24px;text-align:center;color:var(--muted);font-size:14px}.notice{padding:12px 14px;border-radius:8px;background:#f3f0e8;color:#5c503e;font-size:13px;margin-bottom:15px}.pill{font-size:11px;color:#6d5730;background:#f5efdf;border-radius:30px;padding:5px 8px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.layout{grid-template-columns:1fr}.sidebar{display:flex;overflow-x:auto;padding:10px;gap:5px;border-right:0;border-bottom:1px solid var(--line)}.nav-btn{width:auto;white-space:nowrap;margin:0}.main{padding:18px}}@media(max-width:560px){.topbar{padding:0 15px}.topbar .brand{font-size:18px}.main{padding:14px}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:22px}.form-grid{grid-template-columns:1fr}.form-grid .wide{grid-column:auto}.page-head{display:block}.page-head .primary{margin-top:12px}}
+</style>
+</head>
+<body>
+<section id="login-screen" class="login-wrap">
+  <form id="login-form" class="login-card">
+    <h1 class="brand">ALES PLACE</h1><p class="sub">ADMINISTRATION PORTAL</p>
+    <div class="field"><label for="email">Admin email</label><input id="email" type="email" autocomplete="username" required></div>
+    <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div>
+    <button class="primary full" type="submit" id="login-button">Sign in</button>
+    <div id="login-message" class="message" role="alert"></div>
+  </form>
+</section>
+<section id="app-screen" class="app hidden">
+  <header class="topbar"><div><div class="brand">ALES PLACE</div><small>ADMIN DASHBOARD</small></div><button class="logout" id="logout-button">Sign out</button></header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Dashboard navigation">
+      <button class="nav-btn active" data-view="overview">Overview</button>
+      <button class="nav-btn" data-view="grill">Grill &amp; Chill</button>
+      <button class="nav-btn" data-view="thread">Ales Thread</button>
+      <button class="nav-btn" data-view="orders">Orders</button>
+      <button class="nav-btn" data-view="enquiries">Enquiries</button>
+    </nav>
+    <main class="main">
+      <div id="global-message" class="notice hidden" role="status"></div>
+      <section id="view-overview" class="view">
+        <div class="page-head"><div><h1>Overview</h1><div class="muted">A summary of activity across Ales Place.</div></div></div>
+        <div class="stats">
+          <div class="stat"><span>Total orders</span><strong id="stat-orders">—</strong></div>
+          <div class="stat"><span>Pending orders</span><strong id="stat-pending">—</strong></div>
+          <div class="stat"><span>Recorded sales</span><strong id="stat-sales">—</strong></div>
+          <div class="stat"><span>Customer enquiries</span><strong id="stat-enquiries">—</strong></div>
+        </div>
+        <div class="panel"><h2>Recent orders</h2><div id="recent-orders" class="table-wrap"><div class="empty">Loading orders…</div></div></div>
+      </section>
+      <section id="view-grill" class="view hidden"><div class="page-head"><div><h1>Ales Grill &amp; Chill</h1><div class="muted">Manage food and drinks displayed on the lounge website.</div></div><button class="primary" id="add-grill-product">+ Add product</button></div><div id="grill-product-form" class="panel hidden"></div><div class="panel"><div class="toolbar"><input id="grill-search" placeholder="Search food and drinks"><select id="grill-category"><option value="">All categories</option><option value="Food">Food</option><option value="Drinks">Drinks</option></select><select id="grill-active"><option value="">All products</option><option value="true">Active</option><option value="false">Inactive</option></select></div><div id="grill-products" class="table-wrap"><div class="empty">Loading products…</div></div></div></section>
+      <section id="view-thread" class="view hidden"><div class="page-head"><div><h1>Ales Thread</h1><div class="muted">Manage fashion products displayed on the fashion website.</div></div><button class="primary" id="add-thread-product">+ Add product</button></div><div id="thread-product-form" class="panel hidden"></div><div class="panel"><div class="toolbar"><input id="thread-search" placeholder="Search fashion products"><select id="thread-active"><option value="">All products</option><option value="true">Active</option><option value="false">Inactive</option></select></div><div id="thread-products" class="table-wrap"><div class="empty">Loading products…</div></div></div></section>
+      <section id="view-orders" class="view hidden"><div class="page-head"><div><h1>Orders</h1><div class="muted">View orders from both businesses and update their status.</div></div></div><div class="panel"><div class="toolbar"><select id="order-business"><option value="">All businesses</option></select><select id="order-status"><option value="">All statuses</option><option>Pending</option><option>Confirmed</option><option>Processing</option><option>Ready</option><option>Delivered</option><option>Cancelled</option></select></div><div id="orders-table" class="table-wrap"><div class="empty">Loading orders…</div></div></div></section>
+      <section id="view-enquiries" class="view hidden"><div class="page-head"><div><h1>Customer enquiries</h1><div class="muted">Review and update Ales Thread enquiries.</div></div></div><div class="panel"><div class="toolbar"><select id="enquiry-status"><option value="">All enquiries</option><option>Pending</option><option>Reviewed</option><option>Responded</option></select></div><div id="enquiries-table" class="table-wrap"><div class="empty">Loading enquiries…</div></div></div></section>
+    </main>
+  </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script>
+(function(){
+"use strict";
+const supabase = window.alesSupabase;
+const $ = id => document.getElementById(id);
+const state = {user:null,businesses:[],products:[],orders:[],items:[],enquiries:[],editingProduct:null};
+const money = value => new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:0}).format(Number(value||0));
+const esc = value => String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+const date = value => value ? new Date(value).toLocaleString("en-NG",{dateStyle:"medium",timeStyle:"short"}) : "—";
+const statusClass = value => String(value||"").toLowerCase().replace(/[^a-z]+/g,"-");
+function notify(message){$("global-message").textContent=message;$("global-message").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"});setTimeout(()=>$("global-message").classList.add("hidden"),5000);}
+function loginMessage(message){$("login-message").textContent=message||"";}
+function businessById(id){return state.businesses.find(b=>b.id===id)||{};}
+function businessBySlug(slug){return state.businesses.find(b=>b.slug===slug);}
+function showApp(){ $("login-screen").classList.add("hidden");$("app-screen").classList.remove("hidden"); }
+function showLogin(){ $("app-screen").classList.add("hidden");$("login-screen").classList.remove("hidden"); }
+async function verifyAdmin(session){
+  if(!session){state.user=null;showLogin();return;}
+  state.user=session.user;
+  const {data,error}=await supabase.rpc("is_admin");
+  if(error){await supabase.auth.signOut();showLogin();loginMessage("We couldn't verify administrator access. Please check the database function permissions.");return;}
+  if(data!==true){await supabase.auth.signOut();showLogin();loginMessage("This account is not authorised as an Ales Place administrator.");return;}
+  showApp();await loadAll();
+}
+async function loadAll(){
+  const results=await Promise.all([
+    supabase.from("businesses").select("id,name,slug,is_active").order("name"),
+    supabase.from("products").select("id,business_id,name,description,category,price_ngn,image_url,is_active,created_at,updated_at").order("created_at",{ascending:false}),
+    supabase.from("orders").select("id,order_number,business_id,customer_name,customer_phone,fulfilment,delivery_address,notes,status,total_ngn,created_at,updated_at").order("created_at",{ascending:false}),
+    supabase.from("order_items").select("id,order_id,product_id,product_name,variation,quantity,unit_price_ngn,line_total_ngn"),
+    supabase.from("customer_enquiries").select("id,business_id,customer_name,customer_phone,message,status,created_at").order("created_at",{ascending:false})
+  ]);
+  const labels=["businesses","products","orders","order items","enquiries"];
+  for(let i=0;i<results.length;i++){if(results[i].error){notify("Could not load "+labels[i]+": "+results[i].error.message);return;}}
+  [state.businesses,state.products,state.orders,state.items,state.enquiries]=results.map(r=>r.data||[]);
+  populateBusinessFilter();renderOverview();renderProducts("grill");renderProducts("thread");renderOrders();renderEnquiries();
+}
+function populateBusinessFilter(){
+  $("order-business").innerHTML='<option value="">All businesses</option>'+state.businesses.map(b=>'<option value="'+esc(b.id)+'">'+esc(b.name)+'</option>').join("");
+}
+function renderOverview(){
+  $("stat-orders").textContent=state.orders.length;
+  $("stat-pending").textContent=state.orders.filter(o=>(o.status||"Pending").toLowerCase()==="pending").length;
+  $("stat-sales").textContent=money(state.orders.filter(o=>!["cancelled"].includes((o.status||"").toLowerCase())).reduce((sum,o)=>sum+Number(o.total_ngn||0),0));
+  $("stat-enquiries").textContent=state.enquiries.length;
+  const recent=state.orders.slice(0,6);
+  $("recent-orders").innerHTML=recent.length?orderTable(recent,false):'<div class="empty">No orders have been recorded yet.</div>';
+}
+function productRows(list){
+  if(!list.length)return '<div class="empty">No products found.</div>';
+  return '<table><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Status</th><th>Action</th></tr></thead><tbody>'+list.map(p=>'<tr><td><strong>'+esc(p.name)+'</strong><div class="muted">'+esc(p.description||"")+'</div></td><td>'+esc(p.category||"—")+'</td><td>'+money(p.price_ngn)+'</td><td><span class="status '+(p.is_active?"confirmed":"cancelled")+'">'+(p.is_active?"Active":"Inactive")+'</span></td><td><button class="small-btn" data-edit-product="'+esc(p.id)+'">Edit</button> <button class="small-btn" data-toggle-product="'+esc(p.id)+'">'+(p.is_active?"Deactivate":"Activate")+'</button></td></tr>').join("")+'</tbody></table>';
+}
+function renderProducts(which){
+  const slug=which==="grill"?"ales-grill-chill":"ales-thread";const business=businessBySlug(slug);
+  const search=($(which+"-search")?.value||"").toLowerCase();const active=$((which+"-active"))?.value??"";
+  const category=which==="grill"?$("grill-category").value:"";
+  const list=state.products.filter(p=>p.business_id===business.id&&(!search||(p.name+" "+(p.description||"")).toLowerCase().includes(search))&&(!active||String(p.is_active)===active)&&(!category||p.category===category));
+  $(which+"-products").innerHTML=productRows(list);
+}
+function productForm(which,product){
+  const business=businessBySlug(which==="grill"?"ales-grill-chill":"ales-thread");
+  state.editingProduct=product?product.id:null;
+  const categories=which==="grill"?["Food","Drinks"]:["Clothing","Shoes","Accessories","Other"];
+  const categoryOptions=categories.map(c=>'<option '+(product?.category===c?"selected":"")+'>'+c+'</option>').join("");
+  const host=$(which+"-product-form");host.classList.remove("hidden");
+  host.innerHTML='<h2>'+(product?"Edit product":"Add new product")+'</h2><form id="product-editor"><div class="form-grid"><div class="field"><label>Product name</label><input name="name" required maxlength="120" value="'+esc(product?.name||"")+'"></div><div class="field"><label>Category</label><select name="category" required>'+categoryOptions+'</select></div><div class="field"><label>Price (₦)</label><input name="price_ngn" type="number" min="0" step="1" required value="'+esc(product?.price_ngn??"")+'"></div><div class="field"><label>Image URL or image path</label><input name="image_url" value="'+esc(product?.image_url||"")+'" placeholder="image/product-name.jpg"></div><div class="field wide"><label>Description</label><textarea name="description">'+esc(product?.description||"")+'</textarea></div><div class="field"><label><input name="is_active" type="checkbox" '+(product?.is_active!==false?"checked":"")+' style="width:auto"> Show on website (active)</label></div></div><div class="actions"><button class="primary" type="submit">'+(product?"Save changes":"Add product")+'</button><button class="small-btn" type="button" id="cancel-product">Cancel</button></div><div class="message" id="product-message"></div></form>';
+  $("product-editor").addEventListener("submit",async event=>{
+    event.preventDefault();const form=new FormData(event.currentTarget);
+    const payload={business_id:business.id,name:String(form.get("name")).trim(),category:String(form.get("category")),price_ngn:Number(form.get("price_ngn")),image_url:String(form.get("image_url")||"").trim()||null,description:String(form.get("description")||"").trim()||null,is_active:form.get("is_active")==="on",updated_at:new Date().toISOString()};
+    if(!Number.isFinite(payload.price_ngn)||payload.price_ngn<0){$("product-message").textContent="Enter a valid price.";return;}
+    const result=product?await supabase.from("products").update(payload).eq("id",product.id):await supabase.from("products").insert(payload);
+    if(result.error){$("product-message").textContent=result.error.message;return;}
+    host.classList.add("hidden");state.editingProduct=null;await loadAll();notify(product?"Product updated.":"Product added.");
+  });
+  $("cancel-product").addEventListener("click",()=>{host.classList.add("hidden");state.editingProduct=null;});
+}
+function orderTable(list,showBusiness){
+  return '<table><thead><tr><th>Order</th><th>Customer</th>'+(showBusiness?'<th>Business</th>':'')+'<th>Date</th><th>Total</th><th>Status</th>'+(showBusiness?'<th>Update</th>':'')+'</tr></thead><tbody>'+list.map(o=>'<tr><td><strong>'+esc(o.order_number||o.id.slice(0,8))+'</strong><div class="muted">'+esc(o.fulfilment||"")+'</div></td><td>'+esc(o.customer_name)+'<div class="muted">'+esc(o.customer_phone)+'</div></td>'+(showBusiness?'<td>'+esc(businessById(o.business_id).name||"—")+'</td>':'')+'<td>'+date(o.created_at)+'</td><td>'+money(o.total_ngn)+'</td><td><span class="status '+statusClass(o.status||"Pending")+'">'+esc(o.status||"Pending")+'</span></td>'+(showBusiness?'<td><select data-order-status="'+esc(o.id)+'" aria-label="Update order status">'+["Pending","Confirmed","Processing","Ready","Delivered","Cancelled"].map(s=>'<option '+((o.status||"Pending")===s?"selected":"")+'>'+s+'</option>').join("")+'</select></td>':'')+'</tr><tr class="detail-row"><td colspan="'+(showBusiness?7:5)+'"><details><summary class="muted">Order details</summary><div style="padding:10px 0"><strong>Items:</strong> '+state.items.filter(i=>i.order_id===o.id).map(i=>esc(i.product_name)+(i.variation?" ("+esc(i.variation)+")":"")+" × "+i.quantity+" — "+money(i.line_total_ngn)).join("<br>")+'<br><strong>Address:</strong> '+esc(o.delivery_address||"Not provided")+'<br><strong>Notes:</strong> '+esc(o.notes||"None")+'</div></details></td></tr>').join("")+'</tbody></table>';
+}
+function renderOrders(){
+  const business=$("order-business").value,status=$("order-status").value;
+  const list=state.orders.filter(o=>(!business||o.business_id===business)&&(!status||(o.status||"Pending")===status));
+  $("orders-table").innerHTML=list.length?orderTable(list,true):'<div class="empty">No orders match these filters.</div>';
+}
+function renderEnquiries(){
+  const status=$("enquiry-status").value;const list=state.enquiries.filter(e=>!status||(e.status||"Pending")===status);
+  $("enquiries-table").innerHTML=list.length?'<table><thead><tr><th>Customer</th><th>Message</th><th>Date</th><th>Status</th><th>Update</th></tr></thead><tbody>'+list.map(e=>'<tr><td><strong>'+esc(e.customer_name)+'</strong><div class="muted">'+esc(e.customer_phone)+'</div></td><td>'+esc(e.message)+'</td><td>'+date(e.created_at)+'</td><td><span class="status '+statusClass(e.status||"Pending")+'">'+esc(e.status||"Pending")+'</span></td><td><select data-enquiry-status="'+esc(e.id)+'">'+["Pending","Reviewed","Responded"].map(s=>'<option '+((e.status||"Pending")===s?"selected":"")+'>'+s+'</option>').join("")+'</select></td></tr>').join("")+'</tbody></table>':'<div class="empty">No enquiries found.</div>';
+}
+async function updateOrder(id,status){
+  const {error}=await supabase.from("orders").update({status,updated_at:new Date().toISOString()}).eq("id",id);
+  if(error){notify("Order update failed: "+error.message);return;}await loadAll();notify("Order status updated.");
+}
+async function updateEnquiry(id,status){
+  const {error}=await supabase.from("customer_enquiries").update({status}).eq("id",id);
+  if(error){notify("Enquiry update failed: "+error.message);return;}await loadAll();notify("Enquiry status updated.");
+}
+async function toggleProduct(id){
+  const product=state.products.find(p=>p.id===id);if(!product)return;
+  const {error}=await supabase.from("products").update({is_active:!product.is_active,updated_at:new Date().toISOString()}).eq("id",id);
+  if(error){notify("Product update failed: "+error.message);return;}await loadAll();notify(product.is_active?"Product deactivated.":"Product activated.");
+}
+function switchView(name){
+  document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));
+  $("view-"+name).classList.remove("hidden");
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
+}
+$("login-form").addEventListener("submit",async event=>{
+  event.preventDefault();if(!supabase){loginMessage("Supabase did not load. Refresh the page and try again.");return;}
+  const button=$("login-button");button.disabled=true;button.textContent="Signing in…";loginMessage("");
+  const {data,error}=await supabase.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+  button.disabled=false;button.textContent="Sign in";
+  if(error){loginMessage(error.message);return;}await verifyAdmin(data.session);
+});
+$("logout-button").addEventListener("click",async()=>{await supabase.auth.signOut();state.user=null;showLogin();});
+document.querySelectorAll(".nav-btn").forEach(button=>button.addEventListener("click",()=>switchView(button.dataset.view)));
+$("add-grill-product").addEventListener("click",()=>productForm("grill",null));
+$("add-thread-product").addEventListener("click",()=>productForm("thread",null));
+["grill","thread"].forEach(which=>{ $(which+"-search").addEventListener("input",()=>renderProducts(which));$(which+"-active").addEventListener("change",()=>renderProducts(which));});
+$("grill-category").addEventListener("change",()=>renderProducts("grill"));
+$("order-business").addEventListener("change",renderOrders);$("order-status").addEventListener("change",renderOrders);$("enquiry-status").addEventListener("change",renderEnquiries);
+document.addEventListener("click",event=>{
+  const edit=event.target.closest("[data-edit-product]");if(edit){const p=state.products.find(x=>x.id===edit.dataset.editProduct);productForm(p.business_id===businessBySlug("ales-grill-chill")?.id?"grill":"thread",p);return;}
+  const toggle=event.target.closest("[data-toggle-product]");if(toggle)toggleProduct(toggle.dataset.toggleProduct);
+});
+document.addEventListener("change",event=>{
+  if(event.target.matches("[data-order-status]"))updateOrder(event.target.dataset.orderStatus,event.target.value);
+  if(event.target.matches("[data-enquiry-status]"))updateEnquiry(event.target.dataset.enquiryStatus,event.target.value);
+});
+if(!supabase){loginMessage("Supabase did not load. Check your connection and refresh.");}
+else{
+  supabase.auth.getSession().then(({data})=>verifyAdmin(data.session));
+  supabase.auth.onAuthStateChange((_event,session)=>{if(!session){state.user=null;showLogin();}});
+}
+})();
+</script>
+</body>
+</html>
