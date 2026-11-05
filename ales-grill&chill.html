@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -303,6 +304,33 @@ section {
   background: var(--dark-red);
 }
 
+/* ADDED TO CART NOTIFICATION */
+.cart-toast {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  background: #218c50;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 7px;
+  box-shadow: 0 5px 20px #0003;
+  font-weight: bold;
+  z-index: 300;
+  opacity: 0;
+  visibility: hidden;
+  transition: .3s ease;
+  text-align: center;
+  width: max-content;
+  max-width: calc(100% - 30px);
+}
+
+.cart-toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
 .info-section {
   text-align: center;
   background: white;
@@ -364,16 +392,56 @@ footer a {
 .cart-line {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  padding: 14px 0;
+  padding: 16px 0;
   border-bottom: 1px solid #ddd;
 }
 
-.cart-line button {
+.cart-line-info {
+  flex: 1;
+}
+
+.cart-line-info strong {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 9px;
+}
+
+.quantity-controls button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 4px;
+  background: var(--red);
+  color: white;
+  font-size: 19px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.quantity-controls button:hover {
+  background: var(--dark-red);
+}
+
+.quantity-number {
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.remove-button {
   border: none;
   color: var(--red);
   background: none;
   cursor: pointer;
+  font-size: 13px;
 }
 
 .cart-total {
@@ -684,6 +752,11 @@ footer a {
   </p>
 </footer>
 
+<!-- ADDED TO CART MESSAGE -->
+<div class="cart-toast" id="cart-toast" role="status" aria-live="polite">
+  ✓ Added to cart successfully!
+</div>
+
 <div class="cart-panel" id="cart-panel">
 
   <button class="close" onclick="closeCart()">×</button>
@@ -706,6 +779,8 @@ footer a {
 
 let currentPromoSlide = 0;
 let promoTimer;
+let toastTimer;
+let customerName = "";
 
 function showPromoSlide(index) {
   const slides = document.querySelectorAll(".promo-slide");
@@ -835,12 +910,29 @@ const drinks = [
   }
 ];
 
+/*
+  Cart items are grouped by product.
+  Each product has a quantity instead of creating
+  a separate cart line for every click.
+*/
 let cart = [];
-
-let customerName = "";
 
 function money(amount) {
   return "₦" + amount.toLocaleString("en-NG");
+}
+
+/* SHOW SUCCESS MESSAGE */
+function showCartToast(productName) {
+  const toast = document.getElementById("cart-toast");
+
+  toast.textContent = "✓ " + productName + " added to cart successfully!";
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
 }
 
 function displayProducts(containerId, products, category) {
@@ -879,22 +971,41 @@ function displayProducts(containerId, products, category) {
 
 }
 
+/* ADD ITEM TO CART */
 function addToCart(category,index) {
 
   const products = category === "food" ? food : drinks;
   const product = products[index];
 
-  cart.push({
-    ...product,
-    category
-  });
+  // Check whether this product is already in the cart
+  const existingItem = cart.find(item =>
+    item.name === product.name &&
+    item.category === category
+  );
+
+  if(existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({
+      ...product,
+      category,
+      quantity: 1
+    });
+  }
 
   updateCart();
+  showCartToast(product.name);
 }
 
+/* UPDATE CART DISPLAY */
 function updateCart() {
 
-  document.getElementById("cart-count").textContent = cart.length;
+  // Count total individual units in the cart
+  const totalQuantity = cart.reduce(
+    (sum,item) => sum + item.quantity, 0
+  );
+
+  document.getElementById("cart-count").textContent = totalQuantity;
 
   const items = document.getElementById("cart-items");
 
@@ -907,24 +1018,73 @@ function updateCart() {
   items.innerHTML = cart.map((item,index) => `
 
     <div class="cart-line">
-      <div>
-        <strong>${item.name}</strong><br>
-        <small>${money(item.price)}</small>
+
+      <div class="cart-line-info">
+        <strong>${item.name}</strong>
+
+        <small>${money(item.price)} each</small>
+
+        <div class="quantity-controls">
+
+          <button
+            type="button"
+            onclick="changeQuantity(${index},-1)"
+            aria-label="Decrease quantity">
+            −
+          </button>
+
+          <span class="quantity-number">
+            ${item.quantity}
+          </span>
+
+          <button
+            type="button"
+            onclick="changeQuantity(${index},1)"
+            aria-label="Increase quantity">
+            +
+          </button>
+
+        </div>
+
+        <small>
+          Subtotal: ${money(item.price * item.quantity)}
+        </small>
       </div>
 
-      <button onclick="removeItem(${index})">
+      <button
+        class="remove-button"
+        onclick="removeItem(${index})">
         Remove
       </button>
+
     </div>
 
   `).join("");
 
-  const total = cart.reduce((sum,item) => sum + item.price,0);
+  const total = cart.reduce(
+    (sum,item) => sum + (item.price * item.quantity), 0
+  );
 
   document.getElementById("cart-total").textContent =
     "Total: " + money(total);
 }
 
+/* INCREASE OR DECREASE QUANTITY */
+function changeQuantity(index,change) {
+
+  if(!cart[index]) return;
+
+  cart[index].quantity += change;
+
+  // Remove the product if quantity reaches zero
+  if(cart[index].quantity <= 0) {
+    cart.splice(index,1);
+  }
+
+  updateCart();
+}
+
+/* REMOVE ITEM COMPLETELY */
 function removeItem(index) {
   cart.splice(index,1);
   updateCart();
@@ -938,6 +1098,7 @@ function closeCart() {
   document.getElementById("cart-panel").classList.remove("open");
 }
 
+/* CHECKOUT */
 function checkout() {
 
   if(cart.length === 0) {
@@ -990,6 +1151,7 @@ function escapeHTML(value) {
   });
 }
 
+/* RETURN TO CART FROM FULFILMENT SCREEN */
 function restoreCart() {
 
   const panel = document.getElementById("cart-panel");
@@ -1011,6 +1173,7 @@ function restoreCart() {
   updateCart();
 }
 
+/* SEND ORDER TO WHATSAPP */
 function completeOrder(choice) {
 
   let message =
@@ -1020,10 +1183,16 @@ function completeOrder(choice) {
   message += "Fulfilment: " + choice + "\n\n";
 
   cart.forEach(item => {
-    message += item.name + " - " + money(item.price) + "\n";
+    message +=
+      item.name +
+      " x " + item.quantity +
+      " - " + money(item.price * item.quantity) +
+      "\n";
   });
 
-  const total = cart.reduce((sum,item) => sum + item.price,0);
+  const total = cart.reduce(
+    (sum,item) => sum + (item.price * item.quantity), 0
+  );
 
   message += "\nTotal: " + money(total);
 
@@ -1032,7 +1201,7 @@ function completeOrder(choice) {
   }
 
   if(choice === "COLLECTION") {
-    message += "\nI will like to collect my order. Please let me know when it will be ready.";
+    message += "\nI would like to collect my order. Please let me know when it will be ready.";
   }
 
   message += "\n\nPlease confirm my order. Thank you!";
@@ -1046,6 +1215,7 @@ function completeOrder(choice) {
   window.location.href = url;
 }
 
+/* INITIALISE WEBSITE */
 displayProducts("food-products",food,"food");
 displayProducts("drink-products",drinks,"drink");
 
