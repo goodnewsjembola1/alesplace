@@ -1,16 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ales Grill &amp; Chill | Ales Place</title>
+<title>Ales Grill & Chill | Ales Place</title>
 
 <style>
 :root {
   --red: #b5121b;
   --dark-red: #800d14;
-  --white: #ffffff;
   --cream: #fff8f0;
   --black: #171717;
   --grey: #666;
@@ -20,6 +18,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -70,28 +72,7 @@ nav a:hover {
   padding: 10px 16px;
   cursor: pointer;
   font-weight: bold;
-}
-
-.eyebrow {
-  color: #ffd5d5;
-  letter-spacing: 3px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.btn {
-  display: inline-block;
-  padding: 13px 23px;
-  background: var(--red);
-  color: white;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.btn:hover {
-  background: var(--dark-red);
+  border-radius: 4px;
 }
 
 section {
@@ -112,6 +93,31 @@ section {
 .section-heading p {
   color: var(--grey);
 }
+
+.eyebrow {
+  color: #ffd5d5;
+  letter-spacing: 3px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.btn {
+  display: inline-block;
+  padding: 13px 23px;
+  background: var(--red);
+  color: white;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.btn:hover {
+  background: var(--dark-red);
+}
+
+/* HIGHLIGHTS AND PROMOTIONS */
 
 .presentation {
   background: white;
@@ -159,10 +165,6 @@ section {
   color: white;
 }
 
-.promo-copy .eyebrow {
-  color: #ffd5d5;
-}
-
 .promo-copy h3 {
   font-size: clamp(32px, 5vw, 56px);
   line-height: 1.08;
@@ -190,12 +192,13 @@ section {
   cursor: pointer;
 }
 
-.promo-arrow:hover {
-  background: white;
+.promo-arrow.prev {
+  left: 18px;
 }
 
-.promo-arrow.prev { left: 18px; }
-.promo-arrow.next { right: 18px; }
+.promo-arrow.next {
+  right: 18px;
+}
 
 .promo-dots {
   position: absolute;
@@ -223,14 +226,7 @@ section {
   transform: scale(1.2);
 }
 
-@media (max-width: 750px) {
-  .promo-slideshow { min-height: 420px; }
-  .promo-copy { padding: 55px 9%; }
-  .promo-copy p { font-size: 15px; }
-  .promo-arrow { width: 36px; height: 36px; font-size: 22px; }
-  .promo-arrow.prev { left: 10px; }
-  .promo-arrow.next { right: 10px; }
-}
+/* MENU */
 
 .menu-section {
   background: #fff4f4;
@@ -298,38 +294,18 @@ section {
   cursor: pointer;
   font-weight: bold;
   border-radius: 4px;
+  transition: background .2s;
 }
 
 .add:hover {
   background: var(--dark-red);
 }
 
-/* ADDED TO CART NOTIFICATION */
-.cart-toast {
-  position: fixed;
-  bottom: 25px;
-  left: 50%;
-  transform: translate(-50%, 20px);
+.add.selected {
   background: #218c50;
-  color: white;
-  padding: 14px 22px;
-  border-radius: 7px;
-  box-shadow: 0 5px 20px #0003;
-  font-weight: bold;
-  z-index: 300;
-  opacity: 0;
-  visibility: hidden;
-  transition: .3s ease;
-  text-align: center;
-  width: max-content;
-  max-width: calc(100% - 30px);
 }
 
-.cart-toast.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, 0);
-}
+/* CONTACT */
 
 .info-section {
   text-align: center;
@@ -354,6 +330,8 @@ section {
   margin-bottom: 10px;
 }
 
+/* FOOTER */
+
 footer {
   background: var(--black);
   color: white;
@@ -370,6 +348,8 @@ footer a {
   display: inline-block;
   margin-top: 15px;
 }
+
+/* CART */
 
 .cart-panel {
   position: fixed;
@@ -394,54 +374,34 @@ footer a {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 16px 0;
+  padding: 14px 0;
   border-bottom: 1px solid #ddd;
 }
 
-.cart-line-info {
-  flex: 1;
-}
-
-.cart-line-info strong {
-  display: block;
-  margin-bottom: 3px;
+.cart-line button {
+  border: none;
+  color: var(--red);
+  background: none;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 .quantity-controls {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 9px;
+  margin-top: 8px;
 }
 
 .quantity-controls button {
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 4px;
   background: var(--red);
   color: white;
-  font-size: 19px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.quantity-controls button:hover {
-  background: var(--dark-red);
-}
-
-.quantity-number {
-  min-width: 20px;
-  text-align: center;
-  font-weight: bold;
-}
-
-.remove-button {
   border: none;
-  color: var(--red);
-  background: none;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
   cursor: pointer;
-  font-size: 13px;
 }
 
 .cart-total {
@@ -490,16 +450,40 @@ footer a {
   background: var(--red);
 }
 
-.delivery-choice:hover {
-  opacity: .85;
-}
-
 .empty {
   padding: 20px 0;
   color: var(--grey);
 }
 
-@media(max-width: 750px) {
+/* SUCCESS MESSAGE */
+
+.cart-toast {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  background: #218c50;
+  color: white;
+  padding: 13px 22px;
+  border-radius: 6px;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 200;
+  transition: .3s;
+  text-align: center;
+  width: max-content;
+  max-width: 90%;
+}
+
+.cart-toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+/* MOBILE */
+
+@media (max-width: 750px) {
   header {
     padding: 18px 5%;
   }
@@ -524,6 +508,32 @@ footer a {
   .product-image {
     height: 230px;
   }
+
+  .promo-slideshow {
+    min-height: 420px;
+  }
+
+  .promo-copy {
+    padding: 55px 9%;
+  }
+
+  .promo-copy p {
+    font-size: 15px;
+  }
+
+  .promo-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
+  }
+
+  .promo-arrow.prev {
+    left: 10px;
+  }
+
+  .promo-arrow.next {
+    right: 10px;
+  }
 }
 </style>
 </head>
@@ -536,7 +546,8 @@ footer a {
   <nav>
     <a href="index.html">Ales Place</a>
     <a href="#presentation">Highlights &amp; Promotions</a>
-    <a href="#menu">Menu</a>
+    <a href="#menu">Food Menu</a>
+    <a href="#drinks">Drinks</a>
     <a href="#contact">Contact</a>
 
     <button class="cart-button" onclick="openCart()">
@@ -547,6 +558,8 @@ footer a {
 
 <main>
 
+<!-- HIGHLIGHTS AND PROMOTIONS SECTION -->
+
 <section class="presentation" id="presentation">
 
   <div class="section-heading">
@@ -556,12 +569,10 @@ footer a {
 
     <h2>Promotions &amp; Highlights</h2>
 
-    <p>
-      Take a look at what is waiting for you at Ales Grill &amp; Chill.
-    </p>
+    <p>Take a look at what is waiting for you at Ales Grill &amp; Chill.</p>
   </div>
 
-  <div class="promo-slideshow" id="promo-slideshow" aria-label="Ales Grill and Chill highlights and promotions">
+  <div class="promo-slideshow">
 
     <article class="promo-slide active"
       style="background-image:url('image/aluta-lounge-homepage.jpg')">
@@ -639,7 +650,7 @@ footer a {
         <div class="eyebrow">REFRESH YOUR MOMENT</div>
         <h3>Your Favourite Drinks Are Waiting</h3>
         <p>Choose from refreshing drinks and favourites for every occasion.</p>
-        <a href="#drink-products" class="btn">EXPLORE OUR DRINKS</a>
+        <a href="#drinks" class="btn">EXPLORE OUR DRINKS</a>
       </div>
     </article>
 
@@ -655,51 +666,50 @@ footer a {
 
     <button class="promo-arrow prev" type="button"
       aria-label="Previous slide" onclick="changePromoSlide(-1)">‹</button>
+
     <button class="promo-arrow next" type="button"
       aria-label="Next slide" onclick="changePromoSlide(1)">›</button>
 
-    <div class="promo-dots" id="promo-dots" aria-label="Choose slideshow slide">
-      <button class="promo-dot active" type="button" aria-label="Show slide 1" onclick="showPromoSlide(0)"></button>
-      <button class="promo-dot" type="button" aria-label="Show slide 2" onclick="showPromoSlide(1)"></button>
-      <button class="promo-dot" type="button" aria-label="Show slide 3" onclick="showPromoSlide(2)"></button>
-      <button class="promo-dot" type="button" aria-label="Show slide 4" onclick="showPromoSlide(3)"></button>
-      <button class="promo-dot" type="button" aria-label="Show slide 5" onclick="showPromoSlide(4)"></button>
-      <button class="promo-dot" type="button" aria-label="Show slide 6" onclick="showPromoSlide(5)"></button>
-      <button class="promo-dot" type="button" aria-label="Show slide 7" onclick="showPromoSlide(6)"></button>
-      <button class="promo-dot" type="button" aria-label="Show slide 8" onclick="showPromoSlide(7)"></button>
-      <button class="promo-dot" type="button" aria-label="Show slide 9" onclick="showPromoSlide(8)"></button>
+    <div class="promo-dots">
+      <button class="promo-dot active" onclick="showPromoSlide(0)" aria-label="Slide 1"></button>
+      <button class="promo-dot" onclick="showPromoSlide(1)" aria-label="Slide 2"></button>
+      <button class="promo-dot" onclick="showPromoSlide(2)" aria-label="Slide 3"></button>
+      <button class="promo-dot" onclick="showPromoSlide(3)" aria-label="Slide 4"></button>
+      <button class="promo-dot" onclick="showPromoSlide(4)" aria-label="Slide 5"></button>
+      <button class="promo-dot" onclick="showPromoSlide(5)" aria-label="Slide 6"></button>
+      <button class="promo-dot" onclick="showPromoSlide(6)" aria-label="Slide 7"></button>
+      <button class="promo-dot" onclick="showPromoSlide(7)" aria-label="Slide 8"></button>
+      <button class="promo-dot" onclick="showPromoSlide(8)" aria-label="Slide 9"></button>
     </div>
 
   </div>
-
 </section>
+
+<!-- FOOD MENU: MENU ITEMS ONLY -->
 
 <section class="menu-section" id="menu">
 
   <div class="section-heading">
-    <div class="eyebrow" style="color:#b5121b">
-      TASTE THE EXPERIENCE
-    </div>
-
     <h2>Our Food Menu</h2>
-
-    <p>Fresh meals prepared to give you a satisfying experience.</p>
   </div>
 
   <div class="products" id="food-products"></div>
 
 </section>
 
-<section class="menu-section">
+<!-- DRINKS MENU: DRINK ITEMS ONLY -->
+
+<section class="menu-section" id="drinks">
 
   <div class="section-heading">
     <h2>Our Drinks</h2>
-    <p>Refresh yourself with our selection of drinks.</p>
   </div>
 
   <div class="products" id="drink-products"></div>
 
 </section>
+
+<!-- CONTACT SECTION -->
 
 <section class="info-section" id="contact">
 
@@ -752,10 +762,7 @@ footer a {
   </p>
 </footer>
 
-<!-- ADDED TO CART MESSAGE -->
-<div class="cart-toast" id="cart-toast" role="status" aria-live="polite">
-  ✓ Added to cart successfully!
-</div>
+<!-- CART PANEL -->
 
 <div class="cart-panel" id="cart-panel">
 
@@ -775,12 +782,16 @@ footer a {
 
 </div>
 
+<div class="cart-toast" id="cart-toast">
+  Added to cart successfully!
+</div>
+
 <script>
+
+/* SLIDESHOW */
 
 let currentPromoSlide = 0;
 let promoTimer;
-let toastTimer;
-let customerName = "";
 
 function showPromoSlide(index) {
   const slides = document.querySelectorAll(".promo-slide");
@@ -790,12 +801,12 @@ function showPromoSlide(index) {
 
   currentPromoSlide = (index + slides.length) % slides.length;
 
-  slides.forEach((slide, slideIndex) => {
-    slide.classList.toggle("active", slideIndex === currentPromoSlide);
+  slides.forEach((slide, i) => {
+    slide.classList.toggle("active", i === currentPromoSlide);
   });
 
-  dots.forEach((dot, dotIndex) => {
-    dot.classList.toggle("active", dotIndex === currentPromoSlide);
+  dots.forEach((dot, i) => {
+    dot.classList.toggle("active", i === currentPromoSlide);
   });
 
   restartPromoTimer();
@@ -807,55 +818,62 @@ function changePromoSlide(direction) {
 
 function restartPromoTimer() {
   clearInterval(promoTimer);
+
   promoTimer = setInterval(() => {
     showPromoSlide(currentPromoSlide + 1);
   }, 5000);
 }
 
+/* WHATSAPP NUMBER */
+
 const WHATSAPP_NUMBER = "2349037576372";
+
+/* FOOD ITEMS */
 
 const food = [
   {
-    name:"Beef Shawarma",
-    price:2000,
-    image:"https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=700"
+    name: "Beef Shawarma",
+    price: 2000,
+    image: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=700"
   },
   {
-    name:"Chicken Shawarma",
-    price:2000,
-    image:"https://images.unsplash.com/photo-1561651823-34feb02250e4?w=700"
+    name: "Chicken Shawarma",
+    price: 2000,
+    image: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=700"
   },
   {
-    name:"Gizzard",
-    price:5000,
-    image:"https://images.unsplash.com/photo-1544025162-d76694265947?w=700"
+    name: "Gizzard",
+    price: 5000,
+    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=700"
   },
   {
-    name:"Chicken and Chips",
-    price:3500,
-    image:"https://images.unsplash.com/photo-1562967914-608f82629710?w=700"
+    name: "Chicken and Chips",
+    price: 3500,
+    image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=700"
   },
   {
-    name:"Chips and Fish",
-    price:5000,
-    image:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=700"
+    name: "Chips and Fish",
+    price: 5000,
+    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=700"
   },
   {
-    name:"Noodles and Chicken",
-    price:4000,
-    image:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=700"
+    name: "Noodles and Chicken",
+    price: 4000,
+    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=700"
   },
   {
-    name:"Rice and Chicken",
-    price:8000,
-    image:"https://images.unsplash.com/photo-1512058564366-18510be2db19?w=700"
+    name: "Rice and Chicken",
+    price: 8000,
+    image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=700"
   },
   {
-    name:"Rice and Beef",
-    price:6000,
-    image:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=700"
+    name: "Rice and Beef",
+    price: 6000,
+    image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=700"
   }
 ];
+
+/* DRINK ITEMS */
 
 const drinks = [
   {
@@ -910,37 +928,20 @@ const drinks = [
   }
 ];
 
-/*
-  Cart items are grouped by product.
-  Each product has a quantity instead of creating
-  a separate cart line for every click.
-*/
+/* CART */
+
 let cart = [];
+let customerName = "";
+let toastTimer;
 
 function money(amount) {
   return "₦" + amount.toLocaleString("en-NG");
 }
 
-/* SHOW SUCCESS MESSAGE */
-function showCartToast(productName) {
-  const toast = document.getElementById("cart-toast");
-
-  toast.textContent = "✓ " + productName + " added to cart successfully!";
-  toast.classList.add("show");
-
-  clearTimeout(toastTimer);
-
-  toastTimer = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2500);
-}
-
 function displayProducts(containerId, products, category) {
-
   const container = document.getElementById(containerId);
 
-  container.innerHTML = products.map((product,index) => `
-
+  container.innerHTML = products.map((product, index) => `
     <div class="product">
 
       <div class="product-image">
@@ -960,90 +961,93 @@ function displayProducts(containerId, products, category) {
 
         <button
           class="add"
-          onclick="addToCart('${category}',${index})">
+          id="${category}-button-${index}"
+          onclick="toggleCartItem('${category}', ${index})">
           ADD TO CART
         </button>
       </div>
 
     </div>
-
   `).join("");
-
 }
 
-/* ADD ITEM TO CART */
-function addToCart(category,index) {
+/* ADD TO CART BUTTON TOGGLE */
 
+function toggleCartItem(category, index) {
   const products = category === "food" ? food : drinks;
   const product = products[index];
 
-  // Check whether this product is already in the cart
-  const existingItem = cart.find(item =>
-    item.name === product.name &&
-    item.category === category
+  const existingIndex = cart.findIndex(item =>
+    item.category === category && item.name === product.name
   );
 
-  if(existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cart.push({
-      ...product,
-      category,
-      quantity: 1
-    });
+  const button = document.getElementById(`${category}-button-${index}`);
+
+  if (existingIndex !== -1) {
+    cart.splice(existingIndex, 1);
+
+    button.textContent = "ADD TO CART";
+    button.classList.remove("selected");
+
+    updateCart();
+    return;
   }
+
+  cart.push({
+    ...product,
+    category: category,
+    quantity: 1
+  });
+
+  button.textContent = "ADDED ✓";
+  button.classList.add("selected");
 
   updateCart();
   showCartToast(product.name);
 }
 
-/* UPDATE CART DISPLAY */
+/* SUCCESS MESSAGE */
+
+function showCartToast(productName) {
+  const toast = document.getElementById("cart-toast");
+
+  toast.textContent = productName + " added to cart successfully!";
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+}
+
+/* UPDATE CART */
+
 function updateCart() {
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Count total individual units in the cart
-  const totalQuantity = cart.reduce(
-    (sum,item) => sum + item.quantity, 0
-  );
-
-  document.getElementById("cart-count").textContent = totalQuantity;
+  document.getElementById("cart-count").textContent = count;
 
   const items = document.getElementById("cart-items");
+  const totalElement = document.getElementById("cart-total");
 
-  if(cart.length === 0) {
+  if (cart.length === 0) {
     items.innerHTML = '<p class="empty">Your cart is empty.</p>';
-    document.getElementById("cart-total").textContent = "";
+    totalElement.textContent = "";
     return;
   }
 
-  items.innerHTML = cart.map((item,index) => `
-
+  items.innerHTML = cart.map((item, index) => `
     <div class="cart-line">
 
-      <div class="cart-line-info">
-        <strong>${item.name}</strong>
-
+      <div>
+        <strong>${item.name}</strong><br>
         <small>${money(item.price)} each</small>
 
         <div class="quantity-controls">
-
-          <button
-            type="button"
-            onclick="changeQuantity(${index},-1)"
-            aria-label="Decrease quantity">
-            −
-          </button>
-
-          <span class="quantity-number">
-            ${item.quantity}
-          </span>
-
-          <button
-            type="button"
-            onclick="changeQuantity(${index},1)"
-            aria-label="Increase quantity">
-            +
-          </button>
-
+          <button onclick="changeQuantity(${index}, -1)">−</button>
+          <span>${item.quantity}</span>
+          <button onclick="changeQuantity(${index}, 1)">+</button>
         </div>
 
         <small>
@@ -1051,44 +1055,64 @@ function updateCart() {
         </small>
       </div>
 
-      <button
-        class="remove-button"
-        onclick="removeItem(${index})">
+      <button onclick="removeItem(${index})">
         Remove
       </button>
 
     </div>
-
   `).join("");
 
   const total = cart.reduce(
-    (sum,item) => sum + (item.price * item.quantity), 0
+    (sum, item) => sum + item.price * item.quantity,
+    0
   );
 
-  document.getElementById("cart-total").textContent =
-    "Total: " + money(total);
+  totalElement.textContent = "Total: " + money(total);
 }
 
-/* INCREASE OR DECREASE QUANTITY */
-function changeQuantity(index,change) {
+/* CHANGE QUANTITY */
 
-  if(!cart[index]) return;
+function changeQuantity(index, change) {
+  if (!cart[index]) return;
 
   cart[index].quantity += change;
 
-  // Remove the product if quantity reaches zero
-  if(cart[index].quantity <= 0) {
-    cart.splice(index,1);
+  if (cart[index].quantity <= 0) {
+    removeItem(index);
+    return;
   }
 
   updateCart();
 }
 
-/* REMOVE ITEM COMPLETELY */
+/* REMOVE ITEM */
+
 function removeItem(index) {
-  cart.splice(index,1);
+  const removedItem = cart[index];
+
+  if (!removedItem) return;
+
+  const category = removedItem.category;
+  const products = category === "food" ? food : drinks;
+  const productIndex = products.findIndex(
+    product => product.name === removedItem.name
+  );
+
+  cart.splice(index, 1);
+
+  const button = document.getElementById(
+    `${category}-button-${productIndex}`
+  );
+
+  if (button) {
+    button.textContent = "ADD TO CART";
+    button.classList.remove("selected");
+  }
+
   updateCart();
 }
+
+/* OPEN AND CLOSE CART */
 
 function openCart() {
   document.getElementById("cart-panel").classList.add("open");
@@ -1099,16 +1123,16 @@ function closeCart() {
 }
 
 /* CHECKOUT */
-function checkout() {
 
-  if(cart.length === 0) {
+function checkout() {
+  if (cart.length === 0) {
     alert("Your cart is empty.");
     return;
   }
 
   customerName = prompt("Please enter your name:");
 
-  if(!customerName || !customerName.trim()) {
+  if (!customerName || !customerName.trim()) {
     return;
   }
 
@@ -1151,9 +1175,9 @@ function escapeHTML(value) {
   });
 }
 
-/* RETURN TO CART FROM FULFILMENT SCREEN */
-function restoreCart() {
+/* RESTORE CART */
 
+function restoreCart() {
   const panel = document.getElementById("cart-panel");
 
   panel.innerHTML = `
@@ -1174,33 +1198,37 @@ function restoreCart() {
 }
 
 /* SEND ORDER TO WHATSAPP */
-function completeOrder(choice) {
 
+function completeOrder(choice) {
   let message =
     "Hello Ales Grill & Chill! I would like to place an order.\n\n";
 
   message += "Name: " + customerName.trim() + "\n";
   message += "Fulfilment: " + choice + "\n\n";
+  message += "MY ORDER:\n";
 
   cart.forEach(item => {
+    const subtotal = item.price * item.quantity;
+
     message +=
       item.name +
       " x " + item.quantity +
-      " - " + money(item.price * item.quantity) +
+      " - " + money(subtotal) +
       "\n";
   });
 
   const total = cart.reduce(
-    (sum,item) => sum + (item.price * item.quantity), 0
+    (sum, item) => sum + item.price * item.quantity,
+    0
   );
 
   message += "\nTotal: " + money(total);
 
-  if(choice === "DELIVERY") {
+  if (choice === "DELIVERY") {
     message += "\nPlease let me know the delivery fee and next steps.";
   }
 
-  if(choice === "COLLECTION") {
+  if (choice === "COLLECTION") {
     message += "\nI would like to collect my order. Please let me know when it will be ready.";
   }
 
@@ -1212,12 +1240,13 @@ function completeOrder(choice) {
     "?text=" +
     encodeURIComponent(message);
 
-  window.location.href = url;
+  window.open(url, "_blank");
 }
 
-/* INITIALISE WEBSITE */
-displayProducts("food-products",food,"food");
-displayProducts("drink-products",drinks,"drink");
+/* LOAD EVERYTHING */
+
+displayProducts("food-products", food, "food");
+displayProducts("drink-products", drinks, "drink");
 
 showPromoSlide(0);
 updateCart();
