@@ -631,7 +631,7 @@
 
   }
 
-  function completeEnquiry(choice) {
+  async function completeEnquiry(choice) {
 
     const message = [
       "Hello Ales Thread! I would like to make an enquiry.",
@@ -648,6 +648,38 @@
       "",
       "Please get back to me. Thank you."
     ].join("\n");
+
+    if (!window.alesSupabase) {
+      alert("The enquiry service is unavailable. Please refresh the page and try again.");
+      return;
+    }
+
+    try {
+      const { data: business, error: businessError } = await window.alesSupabase
+        .from("businesses")
+        .select("id")
+        .eq("slug", "ales-thread")
+        .eq("is_active", true)
+        .single();
+
+      if (businessError || !business) throw businessError || new Error("Business record not found.");
+
+      const { error } = await window.alesSupabase
+        .from("customer_enquiries")
+        .insert({
+          business_id: business.id,
+          customer_name: customerEnquiry.name,
+          customer_phone: customerEnquiry.phone,
+          message: message,
+          status: "Pending"
+        });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Ales Thread enquiry submission failed:", error);
+      alert("We couldn't save your enquiry. Please try again. Your details are still on this page.");
+      return;
+    }
 
     const whatsappURL =
       "https://wa.me/2348125006317?text=" + encodeURIComponent(message);
