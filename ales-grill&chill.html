@@ -71,32 +71,6 @@ nav a:hover {
   font-weight: bold;
 }
 
-.hero {
-  min-height: 480px;
-  padding: 80px 8%;
-  display: flex;
-  align-items: center;
-  background:
-    linear-gradient(#0009, #0009),
-    url("image/aluta-lounge-homepage.jpg") center/cover;
-  color: white;
-}
-
-.hero-content {
-  max-width: 650px;
-}
-
-.hero h1 {
-  font-size: clamp(38px, 6vw, 65px);
-  line-height: 1.1;
-  margin: 15px 0;
-}
-
-.hero p {
-  font-size: 18px;
-  margin-bottom: 25px;
-}
-
 .eyebrow {
   color: #ffd5d5;
   letter-spacing: 3px;
@@ -137,8 +111,6 @@ section {
 .section-heading p {
   color: var(--grey);
 }
-
-/* PROMOTIONAL SLIDESHOW */
 
 .presentation {
   background: white;
@@ -221,13 +193,8 @@ section {
   background: white;
 }
 
-.promo-arrow.prev {
-  left: 18px;
-}
-
-.promo-arrow.next {
-  right: 18px;
-}
+.promo-arrow.prev { left: 18px; }
+.promo-arrow.next { right: 18px; }
 
 .promo-dots {
   position: absolute;
@@ -256,34 +223,13 @@ section {
 }
 
 @media (max-width: 750px) {
-  .promo-slideshow {
-    min-height: 420px;
-  }
-
-  .promo-copy {
-    padding: 55px 9%;
-  }
-
-  .promo-copy p {
-    font-size: 15px;
-  }
-
-  .promo-arrow {
-    width: 36px;
-    height: 36px;
-    font-size: 22px;
-  }
-
-  .promo-arrow.prev {
-    left: 10px;
-  }
-
-  .promo-arrow.next {
-    right: 10px;
-  }
+  .promo-slideshow { min-height: 420px; }
+  .promo-copy { padding: 55px 9%; }
+  .promo-copy p { font-size: 15px; }
+  .promo-arrow { width: 36px; height: 36px; font-size: 22px; }
+  .promo-arrow.prev { left: 10px; }
+  .promo-arrow.next { right: 10px; }
 }
-
-/* FOOD AND DRINKS MENU */
 
 .menu-section {
   background: #fff4f4;
@@ -357,8 +303,6 @@ section {
   background: var(--dark-red);
 }
 
-/* CONTACT SECTION */
-
 .info-section {
   text-align: center;
   background: white;
@@ -398,8 +342,6 @@ footer a {
   display: inline-block;
   margin-top: 15px;
 }
-
-/* SHOPPING CART */
 
 .cart-panel {
   position: fixed;
@@ -489,8 +431,6 @@ footer a {
   color: var(--grey);
 }
 
-/* MOBILE DESIGN */
-
 @media(max-width: 750px) {
   header {
     padding: 18px 5%;
@@ -513,15 +453,10 @@ footer a {
     grid-template-columns: 1fr;
   }
 
-  .hero {
-    min-height: 400px;
-  }
-
   .product-image {
     height: 230px;
   }
 }
-
 </style>
 </head>
 
@@ -532,7 +467,7 @@ footer a {
 
   <nav>
     <a href="index.html">Ales Place</a>
-    <a href="#presentation">Our Presentation</a>
+    <a href="#presentation">Highlights &amp; Promotions</a>
     <a href="#menu">Menu</a>
     <a href="#contact">Contact</a>
 
@@ -544,33 +479,9 @@ footer a {
 
 <main>
 
-<!-- HERO SECTION -->
-
-<div class="hero">
-  <div class="hero-content">
-
-    <div class="eyebrow">
-      WELCOME TO ALES GRILL &amp; CHILL
-    </div>
-
-    <h1>Good Food. Great Drinks. Good Times.</h1>
-
-    <p>
-      Enjoy delicious meals, refreshing drinks and
-      a wonderful experience at Ales Grill &amp; Chill.
-    </p>
-
-    <a href="#menu" class="btn">EXPLORE OUR MENU</a>
-
-  </div>
-</div>
-
-<!-- PROMOTIONAL SLIDESHOW -->
-
 <section class="presentation" id="presentation">
 
   <div class="section-heading">
-
     <div class="eyebrow" style="color:#b5121b">
       GOOD FOOD • GREAT DRINKS • GOOD TIMES
     </div>
@@ -580,210 +491,153 @@ footer a {
     <p>
       Take a look at what is waiting for you at Ales Grill &amp; Chill.
     </p>
-
   </div>
 
-  <div class="promo-slideshow" id="promo-slideshow">
-
-    <!-- SLIDE 1 -->
+  <div class="promo-slideshow" id="promo-slideshow" aria-label="Ales Grill and Chill highlights and promotions">
 
     <article class="promo-slide active"
       style="background-image:url('image/aluta-lounge-homepage.jpg')">
-
       <div class="promo-copy">
-
-        <div class="eyebrow">
-          WELCOME TO ALES GRILL &amp; CHILL
-        </div>
-
+        <div class="eyebrow">WELCOME TO ALES GRILL &amp; CHILL</div>
         <h3>Good Food. Great Drinks. Good Times.</h3>
-
-        <p>
-          Enjoy delicious meals, refreshing drinks and a wonderful experience.
-        </p>
-
-        <a href="#menu" class="btn">
-          EXPLORE OUR MENU
-        </a>
-
+        <p>Enjoy delicious meals, refreshing drinks and a wonderful experience.</p>
+        <a href="#menu" class="btn">EXPLORE OUR MENU</a>
       </div>
     </article>
-
-    <!-- SLIDE 2 -->
 
     <article class="promo-slide"
-      style="background-image:url('https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=1400')">
-
+      style="background-image:url('image/jollof&amp;turkey.jpg')">
       <div class="promo-copy">
-
-        <div class="eyebrow">
-          MADE TO SATISFY
-        </div>
-
-        <h3>Make Every Bite Count</h3>
-
-        <p>
-          Enjoy our shawarma, chicken, chips, fish and tasty meals prepared for you.
-        </p>
-
-        <a href="#menu" class="btn">
-          VIEW FOOD MENU
-        </a>
-
+        <div class="eyebrow">A TASTE TO REMEMBER</div>
+        <h3>Jollof Rice &amp; Turkey</h3>
+        <p>Rich flavour, delicious rice and a satisfying serving made for you.</p>
+        <a href="#menu" class="btn">VIEW FOOD MENU</a>
       </div>
     </article>
 
-    <!-- SLIDE 3 -->
+    <article class="promo-slide"
+      style="background-image:url('image/rice&amp;beef.jpg')">
+      <div class="promo-copy">
+        <div class="eyebrow">GOOD FOOD, GREAT FLAVOUR</div>
+        <h3>Rice &amp; Beef</h3>
+        <p>A hearty meal for when you want something truly satisfying.</p>
+        <a href="#menu" class="btn">EXPLORE OUR FOOD</a>
+      </div>
+    </article>
+
+    <article class="promo-slide"
+      style="background-image:url('image/spagetti.jpg')">
+      <div class="promo-copy">
+        <div class="eyebrow">MADE TO SATISFY</div>
+        <h3>Delicious Spaghetti</h3>
+        <p>Enjoy a tasty favourite, prepared to make every bite count.</p>
+        <a href="#menu" class="btn">VIEW FOOD MENU</a>
+      </div>
+    </article>
+
+    <article class="promo-slide"
+      style="background-image:url('image/fried&amp;turkey.jpg')">
+      <div class="promo-copy">
+        <div class="eyebrow">FLAVOUR IN EVERY SERVING</div>
+        <h3>Fried Rice &amp; Turkey</h3>
+        <p>Bring your appetite and enjoy a delicious meal at Ales Grill &amp; Chill.</p>
+        <a href="#menu" class="btn">ORDER YOUR FAVOURITE</a>
+      </div>
+    </article>
+
+    <article class="promo-slide"
+      style="background-image:url('image/assorted%20noodles.jpg')">
+      <div class="promo-copy">
+        <div class="eyebrow">CRAVING SOMETHING TASTY?</div>
+        <h3>Assorted Noodles</h3>
+        <p>A flavour-packed option for a satisfying food moment.</p>
+        <a href="#menu" class="btn">EXPLORE OUR MENU</a>
+      </div>
+    </article>
+
+    <article class="promo-slide"
+      style="background-image:url('image/sharwama.jpg')">
+      <div class="promo-copy">
+        <div class="eyebrow">A CROWD FAVOURITE</div>
+        <h3>Fresh, Tasty Shawarma</h3>
+        <p>Choose beef or chicken shawarma and enjoy every bite.</p>
+        <a href="#menu" class="btn">ORDER SHAWARMA</a>
+      </div>
+    </article>
 
     <article class="promo-slide"
       style="background-image:url('image/zobo.jpg')">
-
       <div class="promo-copy">
-
-        <div class="eyebrow">
-          REFRESH YOUR MOMENT
-        </div>
-
+        <div class="eyebrow">REFRESH YOUR MOMENT</div>
         <h3>Your Favourite Drinks Are Waiting</h3>
-
-        <p>
-          Choose from refreshing drinks and favourites for every occasion.
-        </p>
-
-        <a href="#drink-products" class="btn">
-          EXPLORE OUR DRINKS
-        </a>
-
+        <p>Choose from refreshing drinks and favourites for every occasion.</p>
+        <a href="#drink-products" class="btn">EXPLORE OUR DRINKS</a>
       </div>
     </article>
-
-    <!-- SLIDE 4 -->
 
     <article class="promo-slide"
       style="background-image:url('https://images.unsplash.com/photo-1562967914-608f82629710?w=1400')">
-
       <div class="promo-copy">
-
-        <div class="eyebrow">
-          GOOD TIMES START HERE
-        </div>
-
+        <div class="eyebrow">GOOD TIMES START HERE</div>
         <h3>Food, Friends &amp; Feel-Good Moments</h3>
-
-        <p>
-          Place your order for delivery or choose collection.
-          We are ready to serve you.
-        </p>
-
-        <a href="#menu" class="btn">
-          ORDER YOUR FAVOURITES
-        </a>
-
+        <p>Place your order for delivery or choose collection. We are ready to serve you.</p>
+        <a href="#menu" class="btn">ORDER YOUR FAVOURITES</a>
       </div>
     </article>
 
-    <!-- SLIDESHOW ARROWS -->
+    <button class="promo-arrow prev" type="button"
+      aria-label="Previous slide" onclick="changePromoSlide(-1)">‹</button>
+    <button class="promo-arrow next" type="button"
+      aria-label="Next slide" onclick="changePromoSlide(1)">›</button>
 
-    <button class="promo-arrow prev"
-      type="button"
-      aria-label="Previous slide"
-      onclick="changePromoSlide(-1)">
-      ‹
-    </button>
-
-    <button class="promo-arrow next"
-      type="button"
-      aria-label="Next slide"
-      onclick="changePromoSlide(1)">
-      ›
-    </button>
-
-    <!-- SLIDESHOW DOTS -->
-
-    <div class="promo-dots">
-
-      <button class="promo-dot active"
-        type="button"
-        aria-label="Show slide 1"
-        onclick="showPromoSlide(0)">
-      </button>
-
-      <button class="promo-dot"
-        type="button"
-        aria-label="Show slide 2"
-        onclick="showPromoSlide(1)">
-      </button>
-
-      <button class="promo-dot"
-        type="button"
-        aria-label="Show slide 3"
-        onclick="showPromoSlide(2)">
-      </button>
-
-      <button class="promo-dot"
-        type="button"
-        aria-label="Show slide 4"
-        onclick="showPromoSlide(3)">
-      </button>
-
+    <div class="promo-dots" id="promo-dots" aria-label="Choose slideshow slide">
+      <button class="promo-dot active" type="button" aria-label="Show slide 1" onclick="showPromoSlide(0)"></button>
+      <button class="promo-dot" type="button" aria-label="Show slide 2" onclick="showPromoSlide(1)"></button>
+      <button class="promo-dot" type="button" aria-label="Show slide 3" onclick="showPromoSlide(2)"></button>
+      <button class="promo-dot" type="button" aria-label="Show slide 4" onclick="showPromoSlide(3)"></button>
+      <button class="promo-dot" type="button" aria-label="Show slide 5" onclick="showPromoSlide(4)"></button>
+      <button class="promo-dot" type="button" aria-label="Show slide 6" onclick="showPromoSlide(5)"></button>
+      <button class="promo-dot" type="button" aria-label="Show slide 7" onclick="showPromoSlide(6)"></button>
+      <button class="promo-dot" type="button" aria-label="Show slide 8" onclick="showPromoSlide(7)"></button>
+      <button class="promo-dot" type="button" aria-label="Show slide 9" onclick="showPromoSlide(8)"></button>
     </div>
 
   </div>
 
 </section>
 
-<!-- FOOD MENU -->
-
 <section class="menu-section" id="menu">
 
   <div class="section-heading">
-
     <div class="eyebrow" style="color:#b5121b">
       TASTE THE EXPERIENCE
     </div>
 
     <h2>Our Food Menu</h2>
 
-    <p>
-      Fresh meals prepared to give you a satisfying experience.
-    </p>
-
+    <p>Fresh meals prepared to give you a satisfying experience.</p>
   </div>
 
   <div class="products" id="food-products"></div>
 
 </section>
 
-<!-- DRINKS MENU -->
-
 <section class="menu-section">
 
   <div class="section-heading">
-
     <h2>Our Drinks</h2>
-
-    <p>
-      Refresh yourself with our selection of drinks.
-    </p>
-
+    <p>Refresh yourself with our selection of drinks.</p>
   </div>
 
   <div class="products" id="drink-products"></div>
 
 </section>
 
-<!-- CONTACT SECTION -->
-
 <section class="info-section" id="contact">
 
   <div class="section-heading">
-
     <h2>Visit Ales Grill &amp; Chill</h2>
-
-    <p>
-      We look forward to serving you.
-    </p>
-
+    <p>We look forward to serving you.</p>
   </div>
 
   <div class="info-grid">
@@ -806,27 +660,19 @@ footer a {
   </div>
 
   <p style="margin-top:30px">
-
     <a class="btn"
        href="https://wa.me/2349037576372"
        target="_blank">
-
       CHAT WITH US ON WHATSAPP
-
     </a>
-
   </p>
 
 </section>
 
 </main>
 
-<!-- FOOTER -->
-
 <footer>
-
   <h2>ALES PLACE</h2>
-
   <p>A World of Taste &amp; Style.</p>
 
   <a class="back-link" href="index.html">
@@ -836,10 +682,7 @@ footer a {
   <p style="margin-top:20px;font-size:13px">
     © <span id="year"></span> Ales Place. All rights reserved.
   </p>
-
 </footer>
-
-<!-- SHOPPING CART -->
 
 <div class="cart-panel" id="cart-panel">
 
@@ -861,13 +704,10 @@ footer a {
 
 <script>
 
-/* PROMOTIONAL SLIDESHOW */
-
 let currentPromoSlide = 0;
 let promoTimer;
 
 function showPromoSlide(index) {
-
   const slides = document.querySelectorAll(".promo-slide");
   const dots = document.querySelectorAll(".promo-dot");
 
@@ -876,17 +716,11 @@ function showPromoSlide(index) {
   currentPromoSlide = (index + slides.length) % slides.length;
 
   slides.forEach((slide, slideIndex) => {
-    slide.classList.toggle(
-      "active",
-      slideIndex === currentPromoSlide
-    );
+    slide.classList.toggle("active", slideIndex === currentPromoSlide);
   });
 
   dots.forEach((dot, dotIndex) => {
-    dot.classList.toggle(
-      "active",
-      dotIndex === currentPromoSlide
-    );
+    dot.classList.toggle("active", dotIndex === currentPromoSlide);
   });
 
   restartPromoTimer();
@@ -897,140 +731,109 @@ function changePromoSlide(direction) {
 }
 
 function restartPromoTimer() {
-
   clearInterval(promoTimer);
-
   promoTimer = setInterval(() => {
     showPromoSlide(currentPromoSlide + 1);
   }, 5000);
-
 }
-
-/* WHATSAPP NUMBER */
 
 const WHATSAPP_NUMBER = "2349037576372";
 
-/* FOOD PRODUCTS */
-
 const food = [
-
   {
     name:"Beef Shawarma",
     price:2000,
     image:"https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=700"
   },
-
   {
     name:"Chicken Shawarma",
     price:2000,
     image:"https://images.unsplash.com/photo-1561651823-34feb02250e4?w=700"
   },
-
   {
     name:"Gizzard",
     price:5000,
     image:"https://images.unsplash.com/photo-1544025162-d76694265947?w=700"
   },
-
   {
     name:"Chicken and Chips",
     price:3500,
     image:"https://images.unsplash.com/photo-1562967914-608f82629710?w=700"
   },
-
   {
     name:"Chips and Fish",
     price:5000,
     image:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=700"
   },
-
   {
     name:"Noodles and Chicken",
     price:4000,
     image:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=700"
   },
-
   {
     name:"Rice and Chicken",
     price:8000,
     image:"https://images.unsplash.com/photo-1512058564366-18510be2db19?w=700"
   },
-
   {
     name:"Rice and Beef",
     price:6000,
     image:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=700"
   }
-
 ];
 
-/* DRINKS PRODUCTS */
-
 const drinks = [
-
   {
     name: "Zobo",
     price: 1500,
     image: "image/zobo.jpg"
   },
-
   {
     name: "Coke",
     price: 500,
     image: "image/coke.jpg"
   },
-
   {
     name: "Fanta",
     price: 500,
     image: "image/fanta.jpg"
   },
-
   {
     name: "Goldberg",
     price: 1500,
     image: "image/goldberg.jpg"
   },
-
   {
     name: "Trophy",
     price: 1500,
     image: "image/trophy.jpg"
   },
-
   {
     name: "Fayrouz",
     price: 800,
     image: "image/fayrouz.jpg"
   },
-
   {
     name: "Smirnoff Ice",
     price: 1500,
     image: "image/smirnoff ice.jpg"
   },
-
   {
     name: "Smirnoff Vodka",
     price: 5000,
     image: "image/smirnoff vodka.jpg"
   },
-
   {
     name: "Red Label",
     price: 10000,
     image: "image/red label.jpg"
   },
-
   {
     name: "Jack Daniel's",
     price: 20000,
     image: "image/jack daniels.jpg"
   }
-
 ];
-
-/* SHOPPING CART */
 
 let cart = [];
 
@@ -1039,8 +842,6 @@ let customerName = "";
 function money(amount) {
   return "₦" + amount.toLocaleString("en-NG");
 }
-
-/* DISPLAY PRODUCTS */
 
 function displayProducts(containerId, products, category) {
 
@@ -1051,17 +852,14 @@ function displayProducts(containerId, products, category) {
     <div class="product">
 
       <div class="product-image">
-
         <img
           src="${product.image}"
           alt="${product.name}"
           loading="lazy"
           onerror="this.onerror=null;this.src='https://placehold.co/700x450/f4e8e5/b5121b?text=${encodeURIComponent(product.name)}';">
-
       </div>
 
       <div class="product-details">
-
         <h3>${product.name}</h3>
 
         <div class="price">
@@ -1071,11 +869,8 @@ function displayProducts(containerId, products, category) {
         <button
           class="add"
           onclick="addToCart('${category}',${index})">
-
           ADD TO CART
-
         </button>
-
       </div>
 
     </div>
@@ -1084,12 +879,9 @@ function displayProducts(containerId, products, category) {
 
 }
 
-/* ADD TO CART */
-
 function addToCart(category,index) {
 
   const products = category === "food" ? food : drinks;
-
   const product = products[index];
 
   cart.push({
@@ -1100,8 +892,6 @@ function addToCart(category,index) {
   updateCart();
 }
 
-/* UPDATE CART */
-
 function updateCart() {
 
   document.getElementById("cart-count").textContent = cart.length;
@@ -1109,78 +899,49 @@ function updateCart() {
   const items = document.getElementById("cart-items");
 
   if(cart.length === 0) {
-
     items.innerHTML = '<p class="empty">Your cart is empty.</p>';
-
     document.getElementById("cart-total").textContent = "";
-
     return;
   }
 
   items.innerHTML = cart.map((item,index) => `
 
     <div class="cart-line">
-
       <div>
-
         <strong>${item.name}</strong><br>
-
         <small>${money(item.price)}</small>
-
       </div>
 
       <button onclick="removeItem(${index})">
         Remove
       </button>
-
     </div>
 
   `).join("");
 
-  const total = cart.reduce(
-    (sum,item) => sum + item.price,
-    0
-  );
+  const total = cart.reduce((sum,item) => sum + item.price,0);
 
   document.getElementById("cart-total").textContent =
     "Total: " + money(total);
-
 }
-
-/* REMOVE CART ITEM */
 
 function removeItem(index) {
-
   cart.splice(index,1);
-
   updateCart();
-
 }
-
-/* OPEN CART */
 
 function openCart() {
-
   document.getElementById("cart-panel").classList.add("open");
-
 }
-
-/* CLOSE CART */
 
 function closeCart() {
-
   document.getElementById("cart-panel").classList.remove("open");
-
 }
-
-/* CHECKOUT */
 
 function checkout() {
 
   if(cart.length === 0) {
-
     alert("Your cart is empty.");
-
     return;
   }
 
@@ -1193,66 +954,47 @@ function checkout() {
   const panel = document.getElementById("cart-panel");
 
   panel.innerHTML = `
-
     <button class="close" onclick="restoreCart()">×</button>
 
     <h2>Choose Fulfilment</h2>
 
     <p style="margin:20px 0">
-      Hello ${escapeHTML(customerName.trim())},
-      how would you like to receive your order?
+      Hello ${escapeHTML(customerName.trim())}, how would you like to receive your order?
     </p>
 
     <button class="delivery-choice delivery"
       onclick="completeOrder('DELIVERY')">
-
       🚚 DELIVERY
-
     </button>
 
     <button class="delivery-choice collection"
       onclick="completeOrder('COLLECTION')">
-
       🛍 COLLECTION
-
     </button>
 
     <p style="margin-top:20px;color:#666;font-size:13px">
       Select your preferred option to continue to WhatsApp.
     </p>
-
   `;
-
 }
 
-/* PROTECT CUSTOMER NAME */
-
 function escapeHTML(value) {
-
   return value.replace(/[&<>"']/g, function(char) {
-
     return {
-
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
       '"': "&quot;",
       "'": "&#039;"
-
     }[char];
-
   });
-
 }
-
-/* RESTORE CART */
 
 function restoreCart() {
 
   const panel = document.getElementById("cart-panel");
 
   panel.innerHTML = `
-
     <button class="close" onclick="closeCart()">×</button>
 
     <h2>Your Cart</h2>
@@ -1264,14 +1006,10 @@ function restoreCart() {
     <button class="whatsapp" onclick="checkout()">
       ORDER THROUGH WHATSAPP
     </button>
-
   `;
 
   updateCart();
-
 }
-
-/* COMPLETE ORDER */
 
 function completeOrder(choice) {
 
@@ -1279,32 +1017,22 @@ function completeOrder(choice) {
     "Hello Ales Grill & Chill! I would like to place an order.\n\n";
 
   message += "Name: " + customerName.trim() + "\n";
-
   message += "Fulfilment: " + choice + "\n\n";
 
   cart.forEach(item => {
-
     message += item.name + " - " + money(item.price) + "\n";
-
   });
 
-  const total = cart.reduce(
-    (sum,item) => sum + item.price,
-    0
-  );
+  const total = cart.reduce((sum,item) => sum + item.price,0);
 
   message += "\nTotal: " + money(total);
 
   if(choice === "DELIVERY") {
-
     message += "\nPlease let me know the delivery fee and next steps.";
-
   }
 
   if(choice === "COLLECTION") {
-
     message += "\nI will like to collect my order. Please let me know when it will be ready.";
-
   }
 
   message += "\n\nPlease confirm my order. Thank you!";
@@ -1316,17 +1044,12 @@ function completeOrder(choice) {
     encodeURIComponent(message);
 
   window.location.href = url;
-
 }
 
-/* START WEBSITE */
-
 displayProducts("food-products",food,"food");
-
 displayProducts("drink-products",drinks,"drink");
 
 showPromoSlide(0);
-
 updateCart();
 
 document.getElementById("year").textContent =
