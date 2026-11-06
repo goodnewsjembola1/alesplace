@@ -149,10 +149,11 @@ function productForm(which,product){
   const categoryOptions=categories.map(c=>'<option '+(product?.category===c?"selected":"")+'>'+c+'</option>').join("");
   const host=$(which+"-product-form");host.classList.remove("hidden");
   host.innerHTML='<h2>'+(product?"Edit product":"Add new product")+'</h2><form id="product-editor"><div class="form-grid"><div class="field"><label>Product name</label><input name="name" required maxlength="120" value="'+esc(product?.name||"")+'"></div><div class="field"><label>Category</label><select name="category" required>'+categoryOptions+'</select></div><div class="field"><label>Price (₦)</label><input name="price_ngn" type="number" min="0" step="1" required value="'+esc(product?.price_ngn??"")+'"></div><div class="field wide"><label>Product picture</label><select id="product-image-source"><option value="current">Keep current picture</option><option value="github">Choose from GitHub image folder</option><option value="url">Paste image URL</option><option value="upload">Upload from computer</option></select><div id="product-image-current" class="muted"></div><div id="product-image-github-wrap" class="hidden"><select id="product-image-github"><option value="">Loading image files…</option></select></div><div id="product-image-url-wrap" class="hidden"><input id="product-image-url" type="url" placeholder="https://example.com/product.jpg"></div><div id="product-image-upload-wrap" class="hidden"><input id="product-image-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif"></div></div><div class="field wide"><label>Description</label><textarea name="description">'+esc(product?.description||"")+'</textarea></div><div class="field"><label><input name="is_active" type="checkbox" '+(product?.is_active!==false?"checked":"")+' style="width:auto"> Show on website (active)</label></div></div><div class="actions"><button class="primary" type="submit">'+(product?"Save changes":"Add product")+'</button><button class="small-btn" type="button" id="cancel-product">Cancel</button></div><div class="message" id="product-message"></div></form>;
+  $("product-image-current").textContent=product?.image_url?"Current picture: "+product.image_url:"No current picture";$("product-image-github").innerHTML=imageFileOptions();setupImagePicker("product");
   $("product-editor").addEventListener("submit",async event=>{
     event.preventDefault();const form=new FormData(event.currentTarget);
-    const payload={business_id:business.id,name:String(form.get("name")).trim(),category:String(form.get("category")),price_ngn:Number(form.get("price_ngn")),image_url:String(form.get("image_url")||"").trim()||null,description:String(form.get("description")||"").trim()||null,is_active:form.get("is_active")==="on",updated_at:new Date().toISOString()};
-    if(!Number.isFinite(payload.price_ngn)||payload.price_ngn<0){$("product-message").textContent="Enter a valid price.";return;}
+    const payload={business_id:business.id,name:String(form.get("name")).trim(),category:String(form.get("category")),price_ngn:Number(form.get("price_ngn")),image_url:product?.image_url||null,description:String(form.get("description")||"").trim()||null,is_active:form.get("is_active")==="on",updated_at:new Date().toISOString()};
+    if(!Number.isFinite(payload.price_ngn)||payload.price_ngn<0){$("product-message").textContent="Enter a valid price.";return;}try{payload.image_url=await resolveImageChoice("product",product?.image_url||null);}catch(imageError){$("product-message").textContent=imageError.message;return;}
     const result=product?await supabase.from("products").update(payload).eq("id",product.id):await supabase.from("products").insert(payload);
     if(result.error){$("product-message").textContent=result.error.message;return;}
     host.classList.add("hidden");state.editingProduct=null;await loadAll();notify(product?"Product updated.":"Product added.");
@@ -197,16 +198,19 @@ function slideImageUrl(path){
   return "image/" + String(path||"").split("/").map(part=>encodeURIComponent(part)).join("/");
 }
 async function loadImageFiles(){
-  const select=$("slide-image");
-  select.innerHTML='<option value="">Loading image files…</option>';
+  const select=$("slide-image-github");
+  if(select)select.innerHTML='<option value="">Loading image files…</option>';
   try{
     const response=await fetch("https://api.github.com/repos/goodnewsjembola1/alesplace/contents/image");
     if(!response.ok)throw new Error("GitHub returned "+response.status+". Try refreshing the image list later.");
     const files=await response.json();
     state.imageFiles=files.filter(file=>file.type==="file"&&/\.(jpe?g|png|webp|gif|avif)$/i.test(file.name)).map(file=>file.name).sort((a,b)=>a.localeCompare(b));
-    select.innerHTML=state.imageFiles.length?'<option value="">Choose an image…</option>'+state.imageFiles.map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join(""):'<option value="">No image files found in image folder</option>';
+    const options=imageFileOptions();
+    if(select)select.innerHTML=options;
+    const productSelect=$("product-image-github");if(productSelect)productSelect.innerHTML=options;
   }catch(error){
-    select.innerHTML='<option value="">Could not load image files</option>';
+    if(select)select.innerHTML='<option value="">Could not load image files</option>';
+    const productSelect=$("product-image-github");if(productSelect)productSelect.innerHTML='<option value="">Could not load image files</option>';
     $("slide-form-message").textContent=error.message;
   }
 }
@@ -218,7 +222,7 @@ function renderSlides(){
 }
 async function addSlide(event){
   event.preventDefault();
-  const section=$("slide-section").value,imagePath=$("slide-image").value;
+  const section=$("slide-section").value;let imagePath;try{imagePath=await resolveImageChoice("slide");}catch(imageError){$("slide-form-message").textContent=imageError.message;return;}
   const duration=Number($("slide-duration").value),position=Number($("slide-position").value);
   const message=$("slide-form-message");message.textContent="";
   if(!imagePath){message.textContent="Choose an image first.";return;}
@@ -234,7 +238,7 @@ async function addSlide(event){
     const result=await supabase.from("slideshow_images").update({sort_order:i}).eq("id",reordered[i].id);
     if(result.error){message.textContent="Picture added, but ordering could not be fully saved: "+result.error.message;await loadAll();return;}
   }
-  $("slide-image").value="";$("slide-position").value="1";$("slide-duration").value="5";
+  $("slide-image-source").value="github";$("slide-image-github").value="";$("slide-image-url").value="";$("slide-image-file").value="";updateImagePickerVisibility("slide");$("slide-position").value="1";$("slide-duration").value="5";
   await loadAll();message.textContent="Picture added to "+slideSectionNames[section]+".";
 }
 async function saveSlide(id){
@@ -289,7 +293,7 @@ $("order-business").addEventListener("change",renderOrders);$("order-status").ad
 $("slide-add-form").addEventListener("submit",addSlide);
 $("slide-section").addEventListener("change",()=>{});
 $("slide-filter-section").addEventListener("change",renderSlides);
-$("slide-refresh-images").addEventListener("click",loadImageFiles);
+$("slide-refresh-images").addEventListener("click",loadImageFiles);setupImagePicker("slide");
 $("slide-refresh").addEventListener("click",loadAll);
 document.addEventListener("click",event=>{
   const save=event.target.closest("[data-save-slide]");if(save){saveSlide(save.dataset.saveSlide);return;}
