@@ -83,6 +83,39 @@
     footer{background:#171717;color:#f4c7bd}
     @media(max-width:700px){.page-heading{padding:24px 15px}}
 
+    body{--progress-accent:#b5121b;--progress-soft:#fff0ed;--progress-ink:#800d14}
+
+    /* Customer order journey */
+    .tracking{margin-top:18px;padding:18px 16px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .tracking-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+    .tracking-title{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .tracking-current{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:30px;background:var(--progress-soft);color:var(--progress-ink);font-size:12px;font-weight:800}
+    .tracking-current:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--progress-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--progress-accent) 15%,transparent)}
+    .tracking-steps{display:grid;grid-template-columns:repeat(var(--step-count),minmax(0,1fr));gap:0;align-items:start}
+    .tracking-step{position:relative;min-width:0;text-align:center;padding:0 5px}
+    .tracking-step:before{content:"";position:absolute;top:15px;left:calc(-50% + 15px);width:calc(100% - 30px);height:3px;background:#e8e3da;z-index:0}
+    .tracking-step:first-child:before{display:none}
+    .tracking-step.done:before,.tracking-step.current:before{background:var(--progress-accent)}
+    .tracking-dot{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:31px;height:31px;margin:0 auto 9px;border-radius:50%;border:2px solid #ded8ce;background:#fff;color:#8b8377;font-size:12px;font-weight:800}
+    .tracking-step.done .tracking-dot,.tracking-step.current .tracking-dot{border-color:var(--progress-accent);background:var(--progress-accent);color:#fff}
+    .tracking-step.current .tracking-dot{box-shadow:0 0 0 5px var(--progress-soft)}
+    .tracking-step-label{display:block;font-size:11px;line-height:1.35;font-weight:700;color:#898276;overflow-wrap:anywhere}
+    .tracking-step.done .tracking-step-label,.tracking-step.current .tracking-step-label{color:var(--progress-ink)}
+    .tracking-step-note{display:block;margin-top:4px;font-size:10px;line-height:1.35;color:#9a9388}
+    .tracking-step.current .tracking-step-note{color:var(--muted)}
+    .tracking-cancelled{margin-top:18px;padding:15px 16px;border:1px solid #f0caca;border-radius:10px;background:#fff3f3;color:#9b2020}
+    .tracking-cancelled strong{display:block;margin-bottom:4px}
+    .tracking-cancelled p{margin:0;font-size:13px;line-height:1.5}
+    .order-meta{margin-top:13px}
+    @media(max-width:620px){
+      .tracking{padding:15px 10px}
+      .tracking-step{padding:0 2px}
+      .tracking-dot{width:27px;height:27px;margin-bottom:7px;font-size:11px}
+      .tracking-step:before{top:13px;left:calc(-50% + 13px);width:calc(100% - 26px)}
+      .tracking-step-label{font-size:9px}
+      .tracking-step-note{font-size:9px}
+    }
+
   </style>
 </head>
 <body>
@@ -251,6 +284,38 @@
       }
     }
 
+
+    function renderOrderProgress(order) {
+      const delivery = String(order.fulfilment || "").toLowerCase().includes("deliver");
+      const status = String(order.status || "pending").toLowerCase();
+      const steps = [
+        { key: "pending", label: "Order placed", note: "We've received it" },
+        { key: "confirmed", label: "Confirmed", note: "Order accepted" },
+        { key: "preparing", label: "Preparing", note: "Getting it ready" },
+        { key: "ready", label: delivery ? "Ready for dispatch" : "Ready for collection", note: delivery ? "Packed and ready" : "Ready to pick up" },
+        ...(delivery ? [{ key: "out_for_delivery", label: "Out for delivery", note: "On its way to you" }] : []),
+        { key: "completed", label: delivery ? "Delivered" : "Collected", note: delivery ? "Order delivered" : "Order collected" }
+      ];
+      if (status === "cancelled") {
+        return '<div class="tracking-cancelled"><strong>Order cancelled</strong><p>This order will not move through the normal fulfilment pathway. Please contact us if you need assistance.</p></div>';
+      }
+      let activeIndex = steps.findIndex(step => step.key === status);
+      if (activeIndex < 0) activeIndex = 0;
+      const activeLabel = steps[activeIndex].label;
+      const items = steps.map((step, index) => {
+        const state = index < activeIndex ? "done" : index === activeIndex ? "current" : "upcoming";
+        const marker = index < activeIndex ? "✓" : String(index + 1);
+        return '<div class="tracking-step ' + state + '">' +
+          '<span class="tracking-dot">' + marker + '</span>' +
+          '<span class="tracking-step-label">' + step.label + '</span>' +
+          '<span class="tracking-step-note">' + step.note + '</span>' +
+        '</div>';
+      }).join("");
+      return '<div class="tracking" style="--step-count:' + steps.length + '">' +
+        '<div class="tracking-head"><span class="tracking-title">Order progress</span><span class="tracking-current">' + activeLabel + '</span></div>' +
+        '<div class="tracking-steps">' + items + '</div></div>';
+    }
+
     async function loadOrders(user) {
       const list = document.getElementById("orders-list");
       list.innerHTML = '<p class="empty">Loading your orders…</p>';
@@ -278,7 +343,7 @@
         top.className = "order-top";
         const number = document.createElement("span");
         number.className = "order-number";
-        number.textContent = order.order_number;
+        number.textContent = order.order_number || "Order";
         const status = document.createElement("span");
         status.className = "status";
         status.textContent = readableStatus(order.status);
@@ -289,6 +354,7 @@
         meta.textContent = date + " · " + readableStatus(order.fulfilment) + " · " + formatMoney(order.total_ngn) +
           (order.delivery_address ? " · " + order.delivery_address : "");
         card.append(top, meta);
+        card.insertAdjacentHTML("beforeend", renderOrderProgress(order));
         list.appendChild(card);
       });
     }
