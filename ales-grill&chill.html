@@ -823,104 +823,10 @@ footer a {
   </div>
 
   <div class="promo-slideshow" id="promo-slideshow">
-
-    <article class="promo-slide active"
-      style="background-image:url('image/welcome.jpeg')">
-      <div class="promo-copy">
-        <!-- <div class="eyebrow">WELCOME TO ALES GRILL &amp; CHILL</div> -->
-        <!-- <h3>Good Food. Great Drinks. Good Times.</h3> -->
-        <!-- <p>Enjoy delicious meals, refreshing drinks and a wonderful experience.</p> -->
-        <!-- <a href="#menu-categories" class="btn">EXPLORE OUR MENU</a> -->
-      </div>
-    </article>
-
-     <article class="promo-slide"
-      style="background-image:url('image/aluta-lounge-homepage.jpg')">
-      <div class="promo-copy">
-         <!-- <div class="eyebrow">WELCOME TO ALES GRILL &amp; CHILL</div> -->
-        <!-- <h3>Good Food. Great Drinks. Good Times.</h3> -->
-        <!-- <p>Enjoy delicious meals, refreshing drinks and a wonderful experience.</p> -->
-        <!-- <a href="#menu-categories" class="btn">EXPLORE OUR MENU</a> -->
-      </div>
-    </article>
-
-    <article class="promo-slide"
-      style="background-image:url('image/jollof&amp;turkey.jpg')">
-      <div class="promo-copy">
-        <!-- <div class="eyebrow">A TASTE TO REMEMBER</div> -->
-        <!-- <h3>Jollof Rice &amp; Turkey</h3> -->
-        <!-- <p>Rich flavour, delicious rice and a satisfying serving made for you.</p> -->
-        <!-- <a href="#menu-categories" class="btn">VIEW FOOD MENU</a> -->
-      </div>
-    </article>
-
-    <article class="promo-slide"
-      style="background-image:url('image/rice&amp;beef.jpg')">
-      <div class="promo-copy">
-        <!-- <div class="eyebrow">GOOD FOOD, GREAT FLAVOUR</div> -->
-        <!-- <h3>Rice &amp; Beef</h3> -->
-        <!-- <p>A hearty meal for when you want something truly satisfying.</p> -->
-        <!-- <a href="#menu-categories" class="btn">EXPLORE OUR FOOD</a> -->
-      </div>
-    </article>
-
-    <article class="promo-slide"
-      style="background-image:url('image/spagetti.jpg')">
-      <div class="promo-copy">
-        <!-- <div class="eyebrow">MADE TO SATISFY</div> -->
-        <!-- <h3>Delicious Spaghetti</h3> -->
-        <!-- <p>Enjoy a tasty favourite, prepared to make every bite count.</p> -->
-        <!-- <a href="#menu-categories" class="btn">VIEW FOOD MENU</a> -->
-      </div>
-    </article>
-
-    <article class="promo-slide"
-      style="background-image:url('image/fried&amp;turkey.jpg')">
-      <div class="promo-copy">
-        <!-- <div class="eyebrow">FLAVOUR IN EVERY SERVING</div> -->
-        <!-- <h3>Fried Rice &amp; Turkey</h3> -->
-        <!-- <p>Bring your appetite and enjoy a delicious meal at Ales Grill &amp; Chill.</p> -->
-        <!-- <a href="#menu-categories" class="btn">ORDER YOUR FAVOURITE</a> -->
-      </div>
-    </article>
-
-    <article class="promo-slide"
-      style="background-image:url('image/assorted%20noodles.jpg')">
-      <div class="promo-copy">
-        <!-- <div class="eyebrow">CRAVING SOMETHING TASTY?</div> -->
-        <!-- <h3>Assorted Noodles</h3> -->
-        <!-- <p>A flavour-packed option for a satisfying food moment.</p> -->
-        <!-- <a href="#menu-categories" class="btn">EXPLORE OUR MENU</a> -->
-      </div>
-    </article>
-
-    <article class="promo-slide"
-      style="background-image:url('image/sharwama.jpg')">
-      <div class="promo-copy">
-        <!-- <div class="eyebrow">A DELICIOUS FAVOURITE</div> -->
-        <!-- <h3>Enjoy Our Shawarma</h3> -->
-        <!-- <p>Choose your favourite and enjoy a tasty treat.</p> -->
-        <!-- <a href="#menu-categories" class="btn">VIEW FOOD MENU</a> -->
-      </div>
-    </article>
-
-    <article class="promo-slide"
-      style="background-image:url('image/zobo.jpg')">
-      <div class="promo-copy">
-        <!-- <div class="eyebrow">REFRESH YOURSELF</div> -->
-        <!-- <h3>Refreshing Zobo</h3> -->
-        <!-- <p>Enjoy a refreshing drink with your favourite meal.</p> -->
-        <!-- <a href="#menu-categories" class="btn">VIEW DRINKS</a> -->
-      </div>
-    </article>
-
-    <button class="promo-arrow prev" onclick="changePromoSlide(-1)">&#10094;</button>
-    <button class="promo-arrow next" onclick="changePromoSlide(1)">&#10095;</button>
-
+    <button class="promo-arrow prev" type="button" onclick="changePromoSlide(-1)" aria-label="Previous slide">&#10094;</button>
+    <button class="promo-arrow next" type="button" onclick="changePromoSlide(1)" aria-label="Next slide">&#10095;</button>
     <div class="promo-dots" id="promo-dots"></div>
-
-  </div>
-</section>
+  </div></section>
 
 <!-- FOOD AND DRINKS CHOICES -->
 
@@ -1154,35 +1060,29 @@ footer a {
 
 const WHATSAPP_NUMBER = "2349037576372";
 
-/* SLIDESHOW */
+/* LIVE SLIDESHOW FROM SUPABASE */
 
+let promoSlides = [];
 let currentPromoSlide = 0;
-let promoTimer;
-
-const slides = document.querySelectorAll(".promo-slide");
+let promoTimer = null;
+let promoRefreshTimer = null;
+const promoContainer = document.getElementById("promo-slideshow");
 const dotsContainer = document.getElementById("promo-dots");
 
-slides.forEach((slide, index) => {
-  const dot = document.createElement("button");
-  dot.className = "promo-dot" + (index === 0 ? " active" : "");
-  dot.setAttribute("aria-label", "Show image " + (index + 1));
-  dot.onclick = () => showPromoSlide(index);
-  dotsContainer.appendChild(dot);
-});
+function getSlideImageUrl(imagePath) {
+  return "image/" + String(imagePath || "").split("/").map(encodeURIComponent).join("/");
+}
 
 function showPromoSlide(index) {
-  const allSlides = document.querySelectorAll(".promo-slide");
-  const dots = document.querySelectorAll(".promo-dot");
+  if (!promoSlides.length) return;
 
-  if (!allSlides.length) return;
+  currentPromoSlide = (index + promoSlides.length) % promoSlides.length;
 
-  currentPromoSlide = (index + allSlides.length) % allSlides.length;
-
-  allSlides.forEach((slide, i) => {
+  promoContainer.querySelectorAll(".promo-slide").forEach((slide, i) => {
     slide.classList.toggle("active", i === currentPromoSlide);
   });
 
-  dots.forEach((dot, i) => {
+  dotsContainer.querySelectorAll(".promo-dot").forEach((dot, i) => {
     dot.classList.toggle("active", i === currentPromoSlide);
   });
 
@@ -1194,11 +1094,88 @@ function changePromoSlide(direction) {
 }
 
 function restartPromoTimer() {
-  clearInterval(promoTimer);
-  promoTimer = setInterval(() => {
+  clearTimeout(promoTimer);
+  if (!promoSlides.length) return;
+
+  const seconds = Math.max(
+    1,
+    Math.min(120, Number(promoSlides[currentPromoSlide].duration_seconds) || 5)
+  );
+
+  promoTimer = setTimeout(() => {
     showPromoSlide(currentPromoSlide + 1);
-  }, 5000);
+  }, seconds * 1000);
 }
+
+function renderPromoSlides() {
+  promoContainer.querySelectorAll(".promo-slide").forEach(slide => slide.remove());
+  dotsContainer.innerHTML = "";
+
+  promoSlides.forEach((item, index) => {
+    const slide = document.createElement("article");
+    slide.className = "promo-slide";
+    slide.style.backgroundImage = 'url("' + getSlideImageUrl(item.image_path) + '")';
+    slide.setAttribute("aria-label", "Slideshow image " + (index + 1));
+    promoContainer.insertBefore(slide, promoContainer.querySelector(".promo-arrow.prev"));
+
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "promo-dot";
+    dot.setAttribute("aria-label", "Show image " + (index + 1));
+    dot.addEventListener("click", () => showPromoSlide(index));
+    dotsContainer.appendChild(dot);
+  });
+
+  const hasSlides = promoSlides.length > 0;
+  promoContainer.querySelectorAll(".promo-arrow").forEach(button => {
+    button.hidden = !hasSlides || promoSlides.length < 2;
+  });
+  dotsContainer.hidden = !hasSlides || promoSlides.length < 2;
+
+  if (!hasSlides) {
+    const message = document.createElement("p");
+    message.textContent = "There are no active slideshow images at the moment.";
+    message.style.cssText = "padding:40px;text-align:center;color:#666";
+    promoContainer.appendChild(message);
+    clearTimeout(promoTimer);
+    return;
+  }
+
+  currentPromoSlide = 0;
+  showPromoSlide(0);
+}
+
+async function loadPromoSlides() {
+  if (!window.alesSupabase) {
+    console.error("Supabase is not available; slideshow could not be loaded.");
+    return;
+  }
+
+  const { data, error } = await window.alesSupabase
+    .from("slideshow_images")
+    .select("id,image_path,sort_order,duration_seconds")
+    .eq("section", "ales-grill-chill")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Ales Grill & Chill slideshow could not be loaded:", error);
+    return;
+  }
+
+  const nextSlides = data || [];
+  const signature = JSON.stringify(nextSlides);
+  if (signature === window.alesGrillSlideshowSignature) return;
+
+  window.alesGrillSlideshowSignature = signature;
+  promoSlides = nextSlides;
+  renderPromoSlides();
+}
+
+// Load immediately, then check for dashboard changes while the page is open.
+loadPromoSlides();
+promoRefreshTimer = setInterval(loadPromoSlides, 15000);
 
 /* LIVE MENU FROM SUPABASE */
 
@@ -1772,7 +1749,6 @@ document.getElementById("grill-enquiry-form").addEventListener("submit", async f
 loadMenuFromSupabase();
 updateCart();
 
-showPromoSlide(0);
 
 document.getElementById("year").textContent =
   new Date().getFullYear();
