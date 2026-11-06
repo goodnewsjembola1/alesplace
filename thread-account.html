@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ales Thread Customer Account | Ales Place</title>
+  <style>
+    :root{--gold:#d5b46d;--gold-deep:#a9853e;--dark:#090909;--cream:#faf7f0;--muted:#776f63;--line:#e9dfcc}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:#201d19}
+    header{background:var(--dark);color:var(--gold);padding:18px 6%;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:1px solid #3b301c}
+    header a{color:var(--gold);text-decoration:none;font-size:14px}
+    header a:hover{color:#fff1c9}
+    .logo{font-family:Georgia,serif;font-size:25px;letter-spacing:2px}
+    main{width:min(1040px,92%);margin:38px auto 65px}
+    .page-heading{text-align:center;margin-bottom:30px}
+    h1,h2{font-family:Georgia,serif}
+    h1{color:#8a6a30;font-size:clamp(28px,4vw,40px);margin:0 0 9px}
+    .intro{color:var(--muted);margin:0}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;box-shadow:0 10px 30px #241a0809;margin-bottom:24px}
+    .auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+    h2{color:#8a6a30;margin:0 0 9px;font-size:25px}
+    .panel-copy{color:var(--muted);line-height:1.6;margin:0 0 20px}
+    label{display:block;font-weight:bold;font-size:13px;margin:14px 0 7px;color:#4b4234}
+    input{width:100%;padding:14px;border:1px solid #d8cfbf;border-radius:7px;font:inherit;background:#fffdfa;color:#201d19}
+    input:focus{outline:2px solid #d5b46d66;border-color:var(--gold-deep)}
+    button{border:0;border-radius:7px;padding:13px 19px;background:#17130c;color:#f0d28d;font-weight:bold;cursor:pointer;transition:background .2s,transform .2s}
+    button:hover{background:#40351f;transform:translateY(-1px)}
+    button:disabled{opacity:.6;cursor:wait}
+    .primary{width:100%;margin-top:19px}
+    .secondary{background:#f1eadc;color:#332b1d}
+    .secondary:hover{background:#e8dcc4}
+    .message{display:none;padding:12px 14px;border-radius:7px;margin:15px 0;line-height:1.5}
+    .message.show{display:block}
+    .message.error{background:#fff0f0;color:#9c1717}
+    .message.success{background:#edf8ef;color:#20632c}
+    #account-area{display:none}
+    .profile-heading,.order-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .profile-heading p{color:var(--muted);margin:5px 0 0}
+    .profile-display{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:25px}
+    .info-card{background:#fcfaf5;border:1px solid #eee5d5;border-radius:10px;padding:17px 18px;min-width:0}
+    .info-label{display:block;color:#887b66;text-transform:uppercase;letter-spacing:1.1px;font-size:11px;font-weight:bold;margin-bottom:9px}
+    .info-value{display:block;font-size:16px;font-weight:600;color:#282219;overflow-wrap:anywhere;min-height:20px}
+    .profile-email{grid-column:1/-1}
+    .profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+    .edit-form{margin-top:23px;padding-top:20px;border-top:1px solid var(--line)}
+    .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+    .edit-note{font-size:13px;color:var(--muted);margin:0 0 12px}
+    .order-card{border:1px solid var(--line);border-radius:11px;padding:18px;margin:14px 0;background:#fffdfa}
+    .order-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .order-number{font-weight:bold;color:#8a6a30;letter-spacing:.3px}
+    .status{display:inline-block;background:#f3ead8;color:#60491d;padding:6px 11px;border-radius:30px;font-size:12px;font-weight:bold}
+    .order-meta{color:var(--muted);font-size:14px;margin-top:11px;line-height:1.8}
+    .empty{color:var(--muted);text-align:center;padding:24px 5px;line-height:1.6}
+    .hidden{display:none!important}
+    footer{text-align:center;color:#8b8172;padding:22px;font-size:12px;letter-spacing:.5px}
+    @media(max-width:700px){.auth-grid,.profile-grid,.profile-display{grid-template-columns:1fr}.profile-email{grid-column:auto}.panel{padding:20px}main{margin-top:27px}.logo{font-size:21px}}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="ales-thread.html">← Back to Ales Thread</a>
+    <div class="logo">ALES THREAD</div>
+    <a href="index.html">Ales Place</a>
+  </header>
+
+  <main>
+    <div class="page-heading">
+      <h1>Your Ales Thread Account</h1>
+      <p class="intro">Manage your Ales Thread profile and track your orders.</p>
+    </div>
+
+    <div id="auth-message" class="message" role="status"></div>
+
+    <section id="auth-area" class="auth-grid">
+      <div class="panel">
+        <h2>Create an account</h2>
+        <p>Enter your details. We'll send a confirmation link to your email.</p>
+        <form id="signup-form">
+          <label for="signup-name">Full name</label>
+          <input id="signup-name" type="text" autocomplete="name" required maxlength="100">
+          <label for="signup-phone">Phone number</label>
+          <input id="signup-phone" type="tel" autocomplete="tel" required maxlength="20">
+          <label for="signup-email">Email address</label>
+          <input id="signup-email" type="email" autocomplete="email" required>
+          <label for="signup-password">Password</label>
+          <input id="signup-password" type="password" autocomplete="new-password" minlength="8" required>
+          <button class="primary" id="signup-button" type="submit">Create account</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Log in</h2>
+        <p>Already have an account? Log in to view your orders.</p>
+        <form id="login-form">
+          <label for="login-email">Email address</label>
+          <input id="login-email" type="email" autocomplete="email" required>
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" autocomplete="current-password" required>
+          <button class="primary" id="login-button" type="submit">Log in</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="account-area">
+      <div class="panel">
+        <div class="profile-heading">
+          <div><h2>My profile</h2><p>Your personal and contact information.</p></div>
+          <button id="logout-button" class="secondary" type="button">Log out</button>
+        </div>
+        <div id="profile-message" class="message" role="status"></div>
+        <div id="profile-display" class="profile-display">
+          <div class="info-card"><span class="info-label">Full name</span><span class="info-value" id="display-name">Loading…</span></div>
+          <div class="info-card"><span class="info-label">Phone number</span><span class="info-value" id="display-phone">Loading…</span></div>
+          <div class="info-card profile-email"><span class="info-label">Email address</span><span class="info-value" id="display-email">Loading…</span></div>
+        </div>
+        <div class="profile-actions" id="profile-view-actions">
+          <button id="edit-profile-button" type="button">Edit profile</button>
+        </div>
+        <form id="profile-form" class="edit-form hidden">
+          <p class="edit-note">Update your name or phone number below. Your login email is managed separately.</p>
+          <div class="profile-grid">
+            <div><label for="profile-name">Full name</label><input id="profile-name" type="text" required maxlength="100"></div>
+            <div><label for="profile-phone">Phone number</label><input id="profile-phone" type="tel" required maxlength="20"></div>
+            <div style="grid-column:1/-1"><label for="profile-email">Email address</label><input id="profile-email" type="email" disabled></div>
+          </div>
+          <div class="profile-actions">
+            <button type="submit">Save changes</button>
+            <button id="cancel-profile-button" class="secondary" type="button">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>My orders</h2>
+        <p>See your previous orders and their latest status.</p>
+        <div id="orders-list"><p class="empty">Loading your orders…</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© <span id="year"></span> ALES PLACE. ALL RIGHTS RESERVED.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const client = window.alesSupabase;
+    const BUSINESS_SLUG = "ales-thread";
+    const BUSINESS_NAME = "Ales Thread";
+    const authArea = document.getElementById("auth-area");
+    const accountArea = document.getElementById("account-area");
+    const authMessage = document.getElementById("auth-message");
+
+    function showMessage(element, message, type) {
+      element.textContent = message;
+      element.className = "message show " + type;
+    }
+    function clearMessage(element) {
+      element.textContent = "";
+      element.className = "message";
+    }
+    function setBusy(button, busy, label) {
+      button.disabled = busy;
+      if (busy) {
+        button.dataset.originalText = button.textContent;
+        button.textContent = label;
+      } else {
+        button.textContent = button.dataset.originalText || label;
+      }
+    }
+    function formatMoney(value) {
+      return "₦" + Number(value || 0).toLocaleString("en-NG");
+    }
+    function readableStatus(status) {
+      return String(status || "Received").replace(/[_-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function renderProfile(name, phone, email) {
+      document.getElementById("display-name").textContent = name || "Not added yet";
+      document.getElementById("display-phone").textContent = phone || "Not added yet";
+      document.getElementById("display-email").textContent = email || "Not available";
+      document.getElementById("profile-name").value = name || "";
+      document.getElementById("profile-phone").value = phone || "";
+      document.getElementById("profile-email").value = email || "";
+    }
+
+    async function ensureProfile(user) {
+      const { data: existing, error: readError } = await client
+        .from("customer_profiles")
+        .select("id,full_name,email,phone,business_slug")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (readError) throw readError;
+
+      if (existing) {
+        if (existing.business_slug && existing.business_slug !== BUSINESS_SLUG) {
+          throw new Error("This email belongs to an account for " +
+            (existing.business_slug === "ales-grill-chill" ? "Ales Grill & Chill" : "Ales Thread") +
+            ". Please use the correct business account page and a different email address for " + BUSINESS_NAME + ".");
+        }
+        if (!existing.business_slug) {
+          const { error: assignError } = await client.from("customer_profiles")
+            .update({ business_slug: BUSINESS_SLUG, updated_at: new Date().toISOString() })
+            .eq("id", user.id)
+            .is("business_slug", null);
+          if (assignError) throw assignError;
+        }
+        renderProfile(existing.full_name, existing.phone || user.phone, existing.email || user.email);
+        return;
+      }
+
+      const metadata = user.user_metadata || {};
+      const name = metadata.full_name || "";
+      const phone = metadata.phone || user.phone || "";
+      renderProfile(name, phone, user.email);
+      if (name && phone) {
+        const { error } = await client.from("customer_profiles").insert({
+          id: user.id, full_name: name, email: user.email || null, phone, business_slug: BUSINESS_SLUG
+        });
+        if (error) throw error;
+      }
+    }
+
+    async function loadOrders(user) {
+      const list = document.getElementById("orders-list");
+      list.innerHTML = '<p class="empty">Loading your orders…</p>';
+      const { data: orders, error } = await client
+        .from("orders")
+        .select("id,order_number,customer_name,fulfilment,delivery_address,status,total_ngn,created_at,updated_at")
+        .eq("customer_user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        list.textContent = "We couldn't load your orders right now. Please refresh and try again.";
+        console.error("Customer orders could not be loaded:", error);
+        return;
+      }
+      if (!orders || orders.length === 0) {
+        list.innerHTML = '<p class="empty">You have no account-linked orders yet. Orders placed as a guest before creating an account will not automatically appear here.</p>';
+        return;
+      }
+
+      list.replaceChildren();
+      orders.forEach(order => {
+        const card = document.createElement("article");
+        card.className = "order-card";
+        const top = document.createElement("div");
+        top.className = "order-top";
+        const number = document.createElement("span");
+        number.className = "order-number";
+        number.textContent = order.order_number;
+        const status = document.createElement("span");
+        status.className = "status";
+        status.textContent = readableStatus(order.status);
+        top.append(number, status);
+        const meta = document.createElement("div");
+        meta.className = "order-meta";
+        const date = order.created_at ? new Date(order.created_at).toLocaleString("en-NG") : "Date unavailable";
+        meta.textContent = date + " · " + readableStatus(order.fulfilment) + " · " + formatMoney(order.total_ngn) +
+          (order.delivery_address ? " · " + order.delivery_address : "");
+        card.append(top, meta);
+        list.appendChild(card);
+      });
+    }
+
+    async function showAccount(user) {
+      authArea.classList.add("hidden");
+      accountArea.style.display = "block";
+      clearMessage(authMessage);
+      try {
+        await ensureProfile(user);
+        await loadOrders(user);
+      } catch (error) {
+        console.error("Customer profile could not be loaded:", error);
+        accountArea.style.display = "none";
+        authArea.classList.remove("hidden");
+        showMessage(authMessage, error.message || "We couldn't load your business account. Please try again.", "error");
+      }
+    }
+
+    document.getElementById("signup-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!client) return showMessage(authMessage, "The account service is unavailable. Please refresh and try again.", "error");
+      const button = document.getElementById("signup-button");
+      const fullName = document.getElementById("signup-name").value.trim();
+      const phone = document.getElementById("signup-phone").value.trim();
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value;
+      setBusy(button, true, "Creating account…");
+      clearMessage(authMessage);
+      const { data, error } = await client.auth.signUp({
+        email, password,
+        options: {
+          emailRedirectTo: window.location.origin + window.location.pathname,
+          data: { full_name: fullName, phone, business_slug: BUSINESS_SLUG }
+        }
+      });
+      setBusy(button, false, "Create account");
+      if (error) return showMessage(authMessage, error.message, "error");
+      if (data.session && data.user) {
+        try {
+          const { error: profileError } = await client.from("customer_profiles").upsert({
+            id: data.user.id, full_name: fullName, email, phone, business_slug: BUSINESS_SLUG
+          });
+          if (profileError) throw profileError;
+          await showAccount(data.user);
+          showMessage(authMessage, "Your account has been created successfully.", "success");
+        } catch (profileError) {
+          showMessage(authMessage, "Your account was created, but we couldn't save your profile: " + profileError.message, "error");
+        }
+      } else {
+        showMessage(authMessage, "Registration started. Check your email and click the confirmation link. Then return here and log in.", "success");
+      }
+    });
+
+    document.getElementById("login-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!client) return showMessage(authMessage, "The account service is unavailable. Please refresh and try again.", "error");
+      const button = document.getElementById("login-button");
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      setBusy(button, true, "Logging in…");
+      clearMessage(authMessage);
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      setBusy(button, false, "Log in");
+      if (error) return showMessage(authMessage, error.message, "error");
+      await showAccount(data.user);
+    });
+
+    document.getElementById("profile-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      const { data: { user } } = await client.auth.getUser();
+      if (!user) return;
+      const fullName = document.getElementById("profile-name").value.trim();
+      const phone = document.getElementById("profile-phone").value.trim();
+      if (!fullName || !phone) return showMessage(document.getElementById("profile-message"), "Please enter your name and phone number.", "error");
+      const { error } = await client.from("customer_profiles").upsert({
+        id: user.id, full_name: fullName, email: user.email || null, phone, business_slug: BUSINESS_SLUG
+      });
+      if (error) return showMessage(document.getElementById("profile-message"), error.message, "error");
+      renderProfile(fullName, phone, user.email);
+      document.getElementById("profile-form").classList.add("hidden");
+      document.getElementById("profile-view-actions").classList.remove("hidden");
+      showMessage(document.getElementById("profile-message"), "Your profile has been updated.", "success");
+    });
+
+    document.getElementById("edit-profile-button").addEventListener("click", () => {
+      clearMessage(document.getElementById("profile-message"));
+      document.getElementById("profile-form").classList.remove("hidden");
+      document.getElementById("profile-view-actions").classList.add("hidden");
+    });
+
+    document.getElementById("cancel-profile-button").addEventListener("click", () => {
+      document.getElementById("profile-form").classList.add("hidden");
+      document.getElementById("profile-view-actions").classList.remove("hidden");
+      clearMessage(document.getElementById("profile-message"));
+    });
+
+    document.getElementById("logout-button").addEventListener("click", async () => {
+      const { error } = await client.auth.signOut();
+      if (error) return showMessage(authMessage, error.message, "error");
+      accountArea.style.display = "none";
+      authArea.classList.remove("hidden");
+      showMessage(authMessage, "You have been logged out.", "success");
+    });
+
+    if (client) {
+      client.auth.getSession().then(({ data }) => {
+        if (data.session) showAccount(data.session.user);
+      });
+      client.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN" && session) showAccount(session.user);
+      });
+    } else {
+      showMessage(authMessage, "The account service could not start. Please refresh the page.", "error");
+    }
+  </script>
+</body>
+</html>
