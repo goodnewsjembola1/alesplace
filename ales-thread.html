@@ -610,7 +610,10 @@
   const threadDots = document.getElementById("thread-slide-dots");
 
   function getThreadSlideUrl(imagePath) {
-    return "image/" + String(imagePath || "").split("/").map(encodeURIComponent).join("/");
+    const value=String(imagePath||"");
+    if(/^https?:\/\//i.test(value))return value;
+    const local=value.startsWith("image/")?value:"image/"+value;
+    return local.split("/").map((part,index)=>index===0?part:encodeURIComponent(part)).join("/");
   }
 
   function showThreadSlide(index) {
