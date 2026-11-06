@@ -45,12 +45,73 @@
       display: flex;
       align-items: center;
       color: white;
-      background:
-        linear-gradient(90deg, rgba(0,0,0,.85), rgba(0,0,0,.2)),
-        url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=85") center/cover;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      background: #17130e;
     }
 
-    .hero-content { max-width: 620px; }
+    .thread-slideshow {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+    .thread-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .7s ease, visibility .7s ease;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .thread-slide.active { opacity: 1; visibility: visible; }
+    .thread-slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,.85), rgba(0,0,0,.2));
+    }
+    .thread-slide-arrow {
+      position: absolute;
+      z-index: 3;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: #ffffffdf;
+      color: #17130e;
+      font-size: 25px;
+      cursor: pointer;
+    }
+    .thread-slide-arrow.prev { left: 18px; }
+    .thread-slide-arrow.next { right: 18px; }
+    .thread-slide-dots {
+      position: absolute;
+      z-index: 3;
+      left: 0;
+      right: 0;
+      bottom: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 9px;
+    }
+    .thread-slide-dot {
+      width: 10px;
+      height: 10px;
+      padding: 0;
+      border: 1px solid white;
+      border-radius: 50%;
+      background: #ffffff70;
+      cursor: pointer;
+    }
+    .thread-slide-dot.active { background: white; transform: scale(1.2); }
+    .thread-slide-arrow[hidden], .thread-slide-dots[hidden] { display: none !important; }
+
+    .hero-content { max-width: 620px; position: relative; z-index: 2; }
 
     .hero h1 {
       font-family: Georgia, serif;
@@ -348,6 +409,11 @@
 </header>
 
 <section class="hero">
+  <div class="thread-slideshow" id="thread-slideshow" aria-label="Ales Thread fashion highlights">
+    <button class="thread-slide-arrow prev" type="button" onclick="changeThreadSlide(-1)" aria-label="Previous slide">&#10094;</button>
+    <button class="thread-slide-arrow next" type="button" onclick="changeThreadSlide(1)" aria-label="Next slide">&#10095;</button>
+    <div class="thread-slide-dots" id="thread-slide-dots"></div>
+  </div>
   <div class="hero-content">
     <h1>Style That Speaks</h1>
     <p>
@@ -533,6 +599,105 @@
 <script>
 
   let customerEnquiry = {};
+
+  /* ALES THREAD SLIDESHOW MANAGED FROM THE ADMIN DASHBOARD */
+  let threadSlides = [];
+  let currentThreadSlide = 0;
+  let threadSlideTimer = null;
+  const threadSlideshow = document.getElementById("thread-slideshow");
+  const threadDots = document.getElementById("thread-slide-dots");
+
+  function getThreadSlideUrl(imagePath) {
+    return "image/" + String(imagePath || "").split("/").map(encodeURIComponent).join("/");
+  }
+
+  function showThreadSlide(index) {
+    if (!threadSlides.length) return;
+    currentThreadSlide = (index + threadSlides.length) % threadSlides.length;
+    threadSlideshow.querySelectorAll(".thread-slide").forEach((slide, i) => {
+      slide.classList.toggle("active", i === currentThreadSlide);
+    });
+    threadDots.querySelectorAll(".thread-slide-dot").forEach((dot, i) => {
+      dot.classList.toggle("active", i === currentThreadSlide);
+    });
+    restartThreadSlideTimer();
+  }
+
+  function changeThreadSlide(direction) {
+    showThreadSlide(currentThreadSlide + direction);
+  }
+
+  function restartThreadSlideTimer() {
+    clearTimeout(threadSlideTimer);
+    if (!threadSlides.length) return;
+    const seconds = Math.max(1, Math.min(120, Number(threadSlides[currentThreadSlide].duration_seconds) || 5));
+    threadSlideTimer = setTimeout(() => showThreadSlide(currentThreadSlide + 1), seconds * 1000);
+  }
+
+  function renderThreadSlides() {
+    threadSlideshow.querySelectorAll(".thread-slide").forEach(slide => slide.remove());
+    threadDots.innerHTML = "";
+
+    threadSlides.forEach((item, index) => {
+      const slide = document.createElement("div");
+      slide.className = "thread-slide";
+      slide.style.backgroundImage = 'url("' + getThreadSlideUrl(item.image_path) + '")';
+      slide.setAttribute("role", "img");
+      slide.setAttribute("aria-label", "Ales Thread fashion highlight " + (index + 1));
+      threadSlideshow.insertBefore(slide, threadSlideshow.querySelector(".thread-slide-arrow.prev"));
+
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "thread-slide-dot";
+      dot.setAttribute("aria-label", "Show Ales Thread image " + (index + 1));
+      dot.addEventListener("click", () => showThreadSlide(index));
+      threadDots.appendChild(dot);
+    });
+
+    threadSlideshow.querySelectorAll(".thread-slide-arrow").forEach(button => {
+      button.hidden = threadSlides.length < 2;
+    });
+    threadDots.hidden = threadSlides.length < 2;
+
+    if (threadSlides.length) {
+      currentThreadSlide = 0;
+      showThreadSlide(0);
+    } else {
+      clearTimeout(threadSlideTimer);
+    }
+  }
+
+  async function loadThreadSlides() {
+    if (!window.alesSupabase) {
+      console.error("Supabase is not available; Ales Thread slideshow could not be loaded.");
+      return;
+    }
+
+    const { data, error } = await window.alesSupabase
+      .from("slideshow_images")
+      .select("id,image_path,sort_order,duration_seconds")
+      .eq("section", "ales-thread")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Ales Thread slideshow could not be loaded:", error);
+      return;
+    }
+
+    const nextSlides = data || [];
+    const signature = JSON.stringify(nextSlides);
+    if (signature === window.alesThreadSlideshowSignature) return;
+    window.alesThreadSlideshowSignature = signature;
+    threadSlides = nextSlides;
+    renderThreadSlides();
+  }
+
+  loadThreadSlides();
+  setInterval(loadThreadSlides, 15000);
+
+
 
   function escapeThreadText(value) {
     return String(value ?? "").replace(/[&<>"']/g, character => ({
