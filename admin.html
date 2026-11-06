@@ -30,6 +30,8 @@
       <button class="nav-btn" data-view="grill">Grill &amp; Chill</button>
       <button class="nav-btn" data-view="thread">Ales Thread</button>
       <button class="nav-btn" data-view="orders">Orders</button>
+      <button class="nav-btn" data-view="customers-grill">Grill Customers</button>
+      <button class="nav-btn" data-view="customers-thread">Thread Customers</button>
       <button class="nav-btn" data-view="enquiries">Enquiries</button>
       <button class="nav-btn" data-view="slideshows">Slideshows</button>
     </nav>
@@ -48,6 +50,14 @@
       <section id="view-grill" class="view hidden"><div class="page-head"><div><h1>Ales Grill &amp; Chill</h1><div class="muted">Manage food and drinks displayed on the lounge website.</div></div><button class="primary" id="add-grill-product">+ Add product</button></div><div id="grill-product-form" class="panel hidden"></div><div class="panel"><div class="toolbar"><input id="grill-search" placeholder="Search food and drinks"><select id="grill-category"><option value="">All categories</option><option value="Food">Food</option><option value="Drinks">Drinks</option></select><select id="grill-active"><option value="">All products</option><option value="true">Active</option><option value="false">Inactive</option></select></div><div id="grill-products" class="table-wrap"><div class="empty">Loading products…</div></div></div></section>
       <section id="view-thread" class="view hidden"><div class="page-head"><div><h1>Ales Thread</h1><div class="muted">Manage fashion products displayed on the fashion website.</div></div><button class="primary" id="add-thread-product">+ Add product</button></div><div id="thread-product-form" class="panel hidden"></div><div class="panel"><div class="toolbar"><input id="thread-search" placeholder="Search fashion products"><select id="thread-active"><option value="">All products</option><option value="true">Active</option><option value="false">Inactive</option></select></div><div id="thread-products" class="table-wrap"><div class="empty">Loading products…</div></div></div></section>
       <section id="view-orders" class="view hidden"><div class="page-head"><div><h1>Orders</h1><div class="muted">View orders from both businesses and update their status.</div></div></div><div class="panel"><div class="toolbar"><select id="order-business"><option value="">All businesses</option></select><select id="order-status"><option value="">All statuses</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="preparing">Preparing</option><option value="ready">Ready</option><option value="out_for_delivery">Out for delivery</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></div><div id="orders-table" class="table-wrap"><div class="empty">Loading orders…</div></div></div></section>
+      <section id="view-customers-grill" class="view hidden">
+        <div class="page-head"><div><h1>Ales Grill &amp; Chill Customers</h1><div class="muted">Customer accounts registered for Ales Grill &amp; Chill only.</div></div></div>
+        <div class="panel"><div class="toolbar"><input id="grill-customer-search" type="search" placeholder="Search name, email or phone"><button class="small-btn" type="button" id="refresh-customers">Refresh customers</button></div><div id="grill-customers-table" class="table-wrap"><div class="empty">Loading customers…</div></div></div>
+      </section>
+      <section id="view-customers-thread" class="view hidden">
+        <div class="page-head"><div><h1>Ales Thread Customers</h1><div class="muted">Customer accounts registered for Ales Thread only.</div></div></div>
+        <div class="panel"><div class="toolbar"><input id="thread-customer-search" type="search" placeholder="Search name, email or phone"><button class="small-btn" type="button" id="refresh-customers-thread">Refresh customers</button></div><div id="thread-customers-table" class="table-wrap"><div class="empty">Loading customers…</div></div></div>
+      </section>
       <section id="view-enquiries" class="view hidden"><div class="page-head"><div><h1>Customer enquiries</h1><div class="muted">Review and update Ales Thread enquiries.</div></div></div><div class="panel"><div class="toolbar"><select id="enquiry-status"><option value="">All enquiries</option><option>Pending</option><option>Reviewed</option><option>Responded</option></select></div><div id="enquiries-table" class="table-wrap"><div class="empty">Loading enquiries…</div></div></div></section>
       <section id="view-slideshows" class="view hidden">
         <div class="page-head"><div><h1>Slideshow manager</h1><div class="muted">Choose pictures from your GitHub image folder and control where, when and in what order they appear.</div></div></div>
@@ -80,7 +90,7 @@
 "use strict";
 const supabase = window.alesSupabase;
 const $ = id => document.getElementById(id);
-const state = {user:null,businesses:[],products:[],orders:[],items:[],enquiries:[],slides:[],imageFiles:[],editingProduct:null};
+const state = {user:null,businesses:[],products:[],orders:[],items:[],enquiries:[],customers:[],slides:[],imageFiles:[],editingProduct:null};
 const money = value => new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:0}).format(Number(value||0));
 const esc = value => String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 function imageFileOptions(){return state.imageFiles.length?'<option value="">Choose an image…</option>'+state.imageFiles.map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join(""):'<option value="">No image files found in image folder</option>';}
@@ -138,12 +148,13 @@ async function loadAll(){
     supabase.from("orders").select("id,order_number,business_id,customer_name,customer_phone,fulfilment,delivery_address,notes,status,total_ngn,created_at,updated_at").order("created_at",{ascending:false}),
     supabase.from("order_items").select("id,order_id,product_id,product_name,variation,quantity,unit_price_ngn,line_total_ngn"),
     supabase.from("customer_enquiries").select("id,business_id,customer_name,customer_phone,message,status,created_at").order("created_at",{ascending:false}),
-    supabase.from("slideshow_images").select("*").order("section").order("sort_order")
+    supabase.from("slideshow_images").select("*").order("section").order("sort_order"),
+    supabase.from("customer_profiles").select("id,full_name,email,phone,business_slug,created_at").order("created_at",{ascending:false})
   ]);
-  const labels=["businesses","products","orders","order items","enquiries","slideshow images"];
+  const labels=["businesses","products","orders","order items","enquiries","slideshow images","customer profiles"];
   for(let i=0;i<results.length;i++){if(results[i].error){notify("Could not load "+labels[i]+": "+results[i].error.message);return;}}
-  [state.businesses,state.products,state.orders,state.items,state.enquiries,state.slides]=results.map(r=>r.data||[]);
-  populateBusinessFilter();renderOverview();renderProducts("grill");renderProducts("thread");renderOrders();renderEnquiries();renderSlides();
+  [state.businesses,state.products,state.orders,state.items,state.enquiries,state.slides,state.customers]=results.map(r=>r.data||[]);
+  populateBusinessFilter();renderOverview();renderProducts("grill");renderProducts("thread");renderOrders();renderEnquiries();renderCustomers("grill");renderCustomers("thread");renderSlides();
   if(!state.imageFiles.length)loadImageFiles();
 }
 function populateBusinessFilter(){
@@ -200,6 +211,13 @@ function renderOrders(){
   const business=$("order-business").value,status=$("order-status").value;
   const list=state.orders.filter(o=>(!business||o.business_id===business)&&(!status||(o.status||"Pending")===status));
   $("orders-table").innerHTML=list.length?orderTable(list,true):'<div class="empty">No orders match these filters.</div>';
+}
+function renderCustomers(which){
+  const slug=which==="grill"?"ales-grill-chill":"ales-thread";
+  const search=String($(which+"-customer-search")?.value||"").trim().toLowerCase();
+  const list=state.customers.filter(customer=>customer.business_slug===slug&&(!search||[customer.full_name,customer.email,customer.phone].some(value=>String(value||"").toLowerCase().includes(search))));
+  const host=$(which+"-customers-table");
+  host.innerHTML=list.length?'<table><thead><tr><th>Customer</th><th>Email</th><th>Phone</th><th>Registered</th></tr></thead><tbody>'+list.map(customer=>'<tr><td><strong>'+esc(customer.full_name||"—")+'</strong></td><td>'+esc(customer.email||"—")+'</td><td>'+esc(customer.phone||"—")+'</td><td>'+date(customer.created_at)+'</td></tr>').join("")+'</tbody></table>':'<div class="empty">No '+(which==="grill"?"Ales Grill &amp; Chill":"Ales Thread")+' customer accounts found.</div>';
 }
 function renderEnquiries(){
   const status=$("enquiry-status").value;const list=state.enquiries.filter(e=>!status||(e.status||"Pending")===status);
@@ -319,6 +337,10 @@ $("add-thread-product").addEventListener("click",()=>productForm("thread",null))
 ["grill","thread"].forEach(which=>{ $(which+"-search").addEventListener("input",()=>renderProducts(which));$(which+"-active").addEventListener("change",()=>renderProducts(which));});
 $("grill-category").addEventListener("change",()=>renderProducts("grill"));
 $("order-business").addEventListener("change",renderOrders);$("order-status").addEventListener("change",renderOrders);$("enquiry-status").addEventListener("change",renderEnquiries);
+$("grill-customer-search").addEventListener("input",()=>renderCustomers("grill"));
+$("thread-customer-search").addEventListener("input",()=>renderCustomers("thread"));
+$("refresh-customers").addEventListener("click",loadAll);
+$("refresh-customers-thread").addEventListener("click",loadAll);
 $("slide-add-form").addEventListener("submit",addSlide);
 $("slide-section").addEventListener("change",()=>{});
 $("slide-filter-section").addEventListener("change",renderSlides);
