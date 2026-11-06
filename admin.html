@@ -92,7 +92,7 @@ async function resolveImageChoice(prefix,currentValue){
   if(source==="github"){
     const name=$(prefix+"-image-github")?.value;
     if(!name)throw new Error("Choose an image from the GitHub image folder.");
-    return "image/"+name.split("/").map(part=>encodeURIComponent(part)).join("/");
+    return prefix==="slide"?name:"image/"+name.split("/").map(part=>encodeURIComponent(part)).join("/");
   }
   if(source==="url"){
     const value=String($(prefix+"-image-url")?.value||"").trim();
