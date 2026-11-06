@@ -86,7 +86,33 @@ const esc = value => String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":
 function imageFileOptions(){return state.imageFiles.length?'<option value="">Choose an image…</option>'+state.imageFiles.map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join(""):'<option value="">No image files found in image folder</option>';}
 function updateImagePickerVisibility(prefix){const source=$(prefix+"-image-source")?.value;if(!source)return;["github","url","upload"].forEach(kind=>{const wrap=$(prefix+"-image-"+kind+"-wrap");if(wrap)wrap.classList.toggle("hidden",source!==kind);});}
 function setupImagePicker(prefix){const source=$(prefix+"-image-source");if(source){source.addEventListener("change",()=>updateImagePickerVisibility(prefix));updateImagePickerVisibility(prefix);}}
-async function resolveImageChoice(prefix,currentValue){const source=$(prefix+"-image-source")?.value;if(source==="current")return currentValue||null;if(source==="github"){const name=$(prefix+"-image-github")?.value;if(!name)throw new Error("Choose an image from the GitHub image folder.");return "image/"+name.split("/").map(part=>encodeURIComponent(part)).join("/");}if(source==="url"){const value=String($(prefix+"-image-url")?.value||"").trim();if(!/^https?:\\/\\//i.test(value))throw new Error("Enter a valid image URL beginning with http:// or https://.");return value;}if(source==="upload"){const file=$(prefix+"-image-file")?.files?.[0];if(!file)throw new Error("Choose an image file from your computer.");if(!/^image\\/(jpeg|png|webp|gif|avif)$/i.test(file.type))throw new Error("Choose a JPG, PNG, WEBP, GIF or AVIF image.");if(file.size>10*1024*1024)throw new Error("Image must be 10 MB or smaller.");const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"-");const storagePath=Date.now()+"-"+Math.random().toString(36).slice(2,8)+"-"+safeName;const {error}=await supabase.storage.from("site-images").upload(storagePath,file,{cacheControl:"3600",upsert:false,contentType:file.type});if(error)throw new Error("Image upload failed: "+error.message);return supabase.storage.from("site-images").getPublicUrl(storagePath).data.publicUrl;}throw new Error("Choose one of the three picture sources.");}
+async function resolveImageChoice(prefix,currentValue){
+  const source=$(prefix+"-image-source")?.value;
+  if(source==="current")return currentValue||null;
+  if(source==="github"){
+    const name=$(prefix+"-image-github")?.value;
+    if(!name)throw new Error("Choose an image from the GitHub image folder.");
+    return "image/"+name.split("/").map(part=>encodeURIComponent(part)).join("/");
+  }
+  if(source==="url"){
+    const value=String($(prefix+"-image-url")?.value||"").trim();
+    if(!(value.startsWith("https://")||value.startsWith("http://")))throw new Error("Enter a valid image URL beginning with http:// or https://.");
+    return value;
+  }
+  if(source==="upload"){
+    const file=$(prefix+"-image-file")?.files?.[0];
+    if(!file)throw new Error("Choose an image file from your computer.");
+    if(!["image/jpeg","image/png","image/webp","image/gif","image/avif"].includes(file.type))throw new Error("Choose a JPG, PNG, WEBP, GIF or AVIF image.");
+    if(file.size>10*1024*1024)throw new Error("Image must be 10 MB or smaller.");
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"-");
+    const storagePath=Date.now()+"-"+Math.random().toString(36).slice(2,8)+"-"+safeName;
+    const {error}=await supabase.storage.from("site-images").upload(storagePath,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+    if(error)throw new Error("Image upload failed: "+error.message);
+    return supabase.storage.from("site-images").getPublicUrl(storagePath).data.publicUrl;
+  }
+  throw new Error("Choose one of the three picture sources.");
+}
+
 const date = value => value ? new Date(value).toLocaleString("en-NG",{dateStyle:"medium",timeStyle:"short"}) : "—";
 const statusClass = value => String(value||"").toLowerCase().replace(/[^a-z]+/g,"-");
 const orderStatusOptions = [{value:"pending",label:"Pending"},{value:"confirmed",label:"Confirmed"},{value:"preparing",label:"Preparing"},{value:"ready",label:"Ready"},{value:"out_for_delivery",label:"Out for delivery"},{value:"completed",label:"Completed"},{value:"cancelled",label:"Cancelled"}];
@@ -196,7 +222,7 @@ async function toggleProduct(id){
 const slideSectionNames = {"homepage":"Ales Place homepage","ales-grill-chill":"Ales Grill & Chill","ales-thread":"Ales Thread"};
 function slideImageUrl(path){
   const value=String(path||"");
-  if(/^https?:\/\//i.test(value))return value;
+  if(value.startsWith("https://")||value.startsWith("http://"))return value;
   const local=value.startsWith("image/")?value:"image/"+value;
   return local.split("/").map((part,index)=>index===0?part:encodeURIComponent(part)).join("/");
 }
