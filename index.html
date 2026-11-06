@@ -49,6 +49,84 @@
       line-height: 1.8;
       margin-bottom: 42px;
     }
+    .homepage-slideshow {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      height: clamp(230px, 42vw, 430px);
+      margin: 0 auto 42px;
+      overflow: hidden;
+      border: 1px solid #a98a4e;
+      border-radius: 14px;
+      background: #17130e;
+      box-shadow: 0 14px 38px #0008;
+    }
+    .home-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .7s ease, visibility .7s ease;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .home-slide.active { opacity: 1; visibility: visible; }
+    .home-slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, #0008, transparent 75%);
+    }
+    .home-slide-caption {
+      position: absolute;
+      z-index: 1;
+      left: 6%;
+      bottom: 16%;
+      color: #f0d28d;
+      font-family: Georgia, serif;
+      font-size: clamp(20px, 4vw, 38px);
+      text-align: left;
+      text-shadow: 0 2px 12px #000;
+    }
+    .home-slide-arrow {
+      position: absolute;
+      z-index: 3;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: #ffffffdf;
+      color: #17130e;
+      font-size: 25px;
+      cursor: pointer;
+    }
+    .home-slide-arrow.prev { left: 16px; }
+    .home-slide-arrow.next { right: 16px; }
+    .home-slide-dots {
+      position: absolute;
+      z-index: 3;
+      left: 0;
+      right: 0;
+      bottom: 17px;
+      display: flex;
+      justify-content: center;
+      gap: 9px;
+    }
+    .home-slide-dot {
+      width: 10px;
+      height: 10px;
+      padding: 0;
+      border: 1px solid white;
+      border-radius: 50%;
+      background: #ffffff70;
+      cursor: pointer;
+    }
+    .home-slide-dot.active { background: #fff; transform: scale(1.2); }
+    .home-slide-arrow[hidden], .home-slide-dots[hidden] { display: none !important; }
+
     .choices {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -131,6 +209,12 @@
       Choose an experience below and let us take you there.
     </p>
 
+    <section class="homepage-slideshow" id="homepage-slideshow" aria-label="Ales Place highlights" hidden>
+      <button class="home-slide-arrow prev" type="button" onclick="changeHomeSlide(-1)" aria-label="Previous slide">&#10094;</button>
+      <button class="home-slide-arrow next" type="button" onclick="changeHomeSlide(1)" aria-label="Next slide">&#10095;</button>
+      <div class="home-slide-dots" id="homepage-slide-dots"></div>
+    </section>
+
     <section class="choices">
       <a class="choice lounge" href="ales-grill&chill.html">
         <div class="choice-content">
@@ -152,8 +236,109 @@
     <footer>© <span id="year"></span> ALES PLACE. ALL RIGHTS RESERVED.</footer>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    /* HOMEPAGE SLIDESHOW MANAGED FROM THE ADMIN DASHBOARD */
+    let homeSlides = [];
+    let currentHomeSlide = 0;
+    let homeSlideTimer = null;
+    const homeSlideshow = document.getElementById("homepage-slideshow");
+    const homeDots = document.getElementById("homepage-slide-dots");
+
+    function getHomeSlideUrl(imagePath) {
+      return "image/" + String(imagePath || "").split("/").map(encodeURIComponent).join("/");
+    }
+
+    function showHomeSlide(index) {
+      if (!homeSlides.length) return;
+      currentHomeSlide = (index + homeSlides.length) % homeSlides.length;
+
+      homeSlideshow.querySelectorAll(".home-slide").forEach((slide, i) => {
+        slide.classList.toggle("active", i === currentHomeSlide);
+      });
+      homeDots.querySelectorAll(".home-slide-dot").forEach((dot, i) => {
+        dot.classList.toggle("active", i === currentHomeSlide);
+      });
+      restartHomeSlideTimer();
+    }
+
+    function changeHomeSlide(direction) {
+      showHomeSlide(currentHomeSlide + direction);
+    }
+
+    function restartHomeSlideTimer() {
+      clearTimeout(homeSlideTimer);
+      if (!homeSlides.length) return;
+      const seconds = Math.max(1, Math.min(120, Number(homeSlides[currentHomeSlide].duration_seconds) || 5));
+      homeSlideTimer = setTimeout(() => showHomeSlide(currentHomeSlide + 1), seconds * 1000);
+    }
+
+    function renderHomeSlides() {
+      homeSlideshow.querySelectorAll(".home-slide").forEach(slide => slide.remove());
+      homeDots.innerHTML = "";
+
+      homeSlides.forEach((item, index) => {
+        const slide = document.createElement("div");
+        slide.className = "home-slide";
+        slide.style.backgroundImage = 'url("' + getHomeSlideUrl(item.image_path) + '")';
+        slide.setAttribute("role", "img");
+        slide.setAttribute("aria-label", "Ales Place highlight " + (index + 1));
+        homeSlideshow.insertBefore(slide, homeSlideshow.querySelector(".home-slide-arrow.prev"));
+
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "home-slide-dot";
+        dot.setAttribute("aria-label", "Show homepage image " + (index + 1));
+        dot.addEventListener("click", () => showHomeSlide(index));
+        homeDots.appendChild(dot);
+      });
+
+      homeSlideshow.hidden = homeSlides.length === 0;
+      homeSlideshow.querySelectorAll(".home-slide-arrow").forEach(button => {
+        button.hidden = homeSlides.length < 2;
+      });
+      homeDots.hidden = homeSlides.length < 2;
+
+      if (homeSlides.length) {
+        currentHomeSlide = 0;
+        showHomeSlide(0);
+      } else {
+        clearTimeout(homeSlideTimer);
+      }
+    }
+
+    async function loadHomeSlides() {
+      if (!window.alesSupabase) {
+        console.error("Supabase is not available; homepage slideshow could not be loaded.");
+        return;
+      }
+
+      const { data, error } = await window.alesSupabase
+        .from("slideshow_images")
+        .select("id,image_path,sort_order,duration_seconds")
+        .eq("section", "homepage")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Homepage slideshow could not be loaded:", error);
+        return;
+      }
+
+      const nextSlides = data || [];
+      const signature = JSON.stringify(nextSlides);
+      if (signature === window.alesPlaceHomepageSlideshowSignature) return;
+      window.alesPlaceHomepageSlideshowSignature = signature;
+      homeSlides = nextSlides;
+      renderHomeSlides();
+    }
+
+    loadHomeSlides();
+    setInterval(loadHomeSlides, 15000);
   </script>
 </body>
 </html>
