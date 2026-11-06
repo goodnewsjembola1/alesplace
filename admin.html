@@ -31,6 +31,7 @@
       <button class="nav-btn" data-view="thread">Ales Thread</button>
       <button class="nav-btn" data-view="orders">Orders</button>
       <button class="nav-btn" data-view="enquiries">Enquiries</button>
+      <button class="nav-btn" data-view="slideshows">Slideshows</button>
     </nav>
     <main class="main">
       <div id="global-message" class="notice hidden" role="status"></div>
@@ -48,6 +49,27 @@
       <section id="view-thread" class="view hidden"><div class="page-head"><div><h1>Ales Thread</h1><div class="muted">Manage fashion products displayed on the fashion website.</div></div><button class="primary" id="add-thread-product">+ Add product</button></div><div id="thread-product-form" class="panel hidden"></div><div class="panel"><div class="toolbar"><input id="thread-search" placeholder="Search fashion products"><select id="thread-active"><option value="">All products</option><option value="true">Active</option><option value="false">Inactive</option></select></div><div id="thread-products" class="table-wrap"><div class="empty">Loading products…</div></div></div></section>
       <section id="view-orders" class="view hidden"><div class="page-head"><div><h1>Orders</h1><div class="muted">View orders from both businesses and update their status.</div></div></div><div class="panel"><div class="toolbar"><select id="order-business"><option value="">All businesses</option></select><select id="order-status"><option value="">All statuses</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="preparing">Preparing</option><option value="ready">Ready</option><option value="out_for_delivery">Out for delivery</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></div><div id="orders-table" class="table-wrap"><div class="empty">Loading orders…</div></div></div></section>
       <section id="view-enquiries" class="view hidden"><div class="page-head"><div><h1>Customer enquiries</h1><div class="muted">Review and update Ales Thread enquiries.</div></div></div><div class="panel"><div class="toolbar"><select id="enquiry-status"><option value="">All enquiries</option><option>Pending</option><option>Reviewed</option><option>Responded</option></select></div><div id="enquiries-table" class="table-wrap"><div class="empty">Loading enquiries…</div></div></div></section>
+      <section id="view-slideshows" class="view hidden">
+        <div class="page-head"><div><h1>Slideshow manager</h1><div class="muted">Choose pictures from your GitHub image folder and control where, when and in what order they appear.</div></div></div>
+        <div class="notice">Add image files to the repository's <strong>image</strong> folder first. This dashboard selects those files; it does not upload or delete files from GitHub.</div>
+        <div class="panel">
+          <h2>Add a picture to a slideshow</h2>
+          <form id="slide-add-form">
+            <div class="form-grid">
+              <div class="field"><label for="slide-section">Website section</label><select id="slide-section" required><option value="homepage">Ales Place homepage</option><option value="ales-grill-chill">Ales Grill &amp; Chill</option><option value="ales-thread">Ales Thread</option></select></div>
+              <div class="field"><label for="slide-image">Picture from image folder</label><select id="slide-image" required><option value="">Loading image files…</option></select></div>
+              <div class="field"><label for="slide-duration">Duration (seconds)</label><input id="slide-duration" type="number" min="1" max="120" value="5" required></div>
+              <div class="field"><label for="slide-position">Position (1 = first)</label><input id="slide-position" type="number" min="1" value="1" required></div>
+            </div>
+            <div class="actions"><button class="primary" type="submit" id="slide-add-button">Add picture</button><button class="small-btn" type="button" id="slide-refresh-images">Refresh image list</button></div>
+            <div class="message" id="slide-form-message" role="status"></div>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="toolbar"><label for="slide-filter-section"><strong>Manage section:</strong></label><select id="slide-filter-section"><option value="homepage">Ales Place homepage</option><option value="ales-grill-chill">Ales Grill &amp; Chill</option><option value="ales-thread">Ales Thread</option></select><button class="small-btn" type="button" id="slide-refresh">Refresh slides</button></div>
+          <div id="slides-table" class="table-wrap"><div class="empty">Loading slideshow settings…</div></div>
+        </div>
+      </section>
     </main>
   </div>
 </section>
@@ -58,7 +80,7 @@
 "use strict";
 const supabase = window.alesSupabase;
 const $ = id => document.getElementById(id);
-const state = {user:null,businesses:[],products:[],orders:[],items:[],enquiries:[],editingProduct:null};
+const state = {user:null,businesses:[],products:[],orders:[],items:[],enquiries:[],slides:[],imageFiles:[],editingProduct:null};
 const money = value => new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:0}).format(Number(value||0));
 const esc = value => String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const date = value => value ? new Date(value).toLocaleString("en-NG",{dateStyle:"medium",timeStyle:"short"}) : "—";
@@ -85,12 +107,14 @@ async function loadAll(){
     supabase.from("products").select("id,business_id,name,description,category,price_ngn,image_url,is_active,created_at,updated_at").order("created_at",{ascending:false}),
     supabase.from("orders").select("id,order_number,business_id,customer_name,customer_phone,fulfilment,delivery_address,notes,status,total_ngn,created_at,updated_at").order("created_at",{ascending:false}),
     supabase.from("order_items").select("id,order_id,product_id,product_name,variation,quantity,unit_price_ngn,line_total_ngn"),
-    supabase.from("customer_enquiries").select("id,business_id,customer_name,customer_phone,message,status,created_at").order("created_at",{ascending:false})
+    supabase.from("customer_enquiries").select("id,business_id,customer_name,customer_phone,message,status,created_at").order("created_at",{ascending:false}),
+    supabase.from("slideshow_images").select("*").order("section").order("sort_order")
   ]);
-  const labels=["businesses","products","orders","order items","enquiries"];
+  const labels=["businesses","products","orders","order items","enquiries","slideshow images"];
   for(let i=0;i<results.length;i++){if(results[i].error){notify("Could not load "+labels[i]+": "+results[i].error.message);return;}}
-  [state.businesses,state.products,state.orders,state.items,state.enquiries]=results.map(r=>r.data||[]);
-  populateBusinessFilter();renderOverview();renderProducts("grill");renderProducts("thread");renderOrders();renderEnquiries();
+  [state.businesses,state.products,state.orders,state.items,state.enquiries,state.slides]=results.map(r=>r.data||[]);
+  populateBusinessFilter();renderOverview();renderProducts("grill");renderProducts("thread");renderOrders();renderEnquiries();renderSlides();
+  if(!state.imageFiles.length)loadImageFiles();
 }
 function populateBusinessFilter(){
   $("order-business").innerHTML='<option value="">All businesses</option>'+state.businesses.map(b=>'<option value="'+esc(b.id)+'">'+esc(b.name)+'</option>').join("");
@@ -163,6 +187,82 @@ async function toggleProduct(id){
   const {error}=await supabase.from("products").update({is_active:!product.is_active,updated_at:new Date().toISOString()}).eq("id",id);
   if(error){notify("Product update failed: "+error.message);return;}await loadAll();notify(product.is_active?"Product deactivated.":"Product activated.");
 }
+
+const slideSectionNames = {"homepage":"Ales Place homepage","ales-grill-chill":"Ales Grill & Chill","ales-thread":"Ales Thread"};
+function slideImageUrl(path){
+  return "image/" + String(path||"").split("/").map(part=>encodeURIComponent(part)).join("/");
+}
+async function loadImageFiles(){
+  const select=$("slide-image");
+  select.innerHTML='<option value="">Loading image files…</option>';
+  try{
+    const response=await fetch("https://api.github.com/repos/goodnewsjembola1/alesplace/contents/image");
+    if(!response.ok)throw new Error("GitHub returned "+response.status+". Try refreshing the image list later.");
+    const files=await response.json();
+    state.imageFiles=files.filter(file=>file.type==="file"&&/\.(jpe?g|png|webp|gif|avif)$/i.test(file.name)).map(file=>file.name).sort((a,b)=>a.localeCompare(b));
+    select.innerHTML=state.imageFiles.length?'<option value="">Choose an image…</option>'+state.imageFiles.map(name=>'<option value="'+esc(name)+'">'+esc(name)+'</option>').join(""):'<option value="">No image files found in image folder</option>';
+  }catch(error){
+    select.innerHTML='<option value="">Could not load image files</option>';
+    $("slide-form-message").textContent=error.message;
+  }
+}
+function renderSlides(){
+  const section=$("slide-filter-section").value;
+  const rows=state.slides.filter(slide=>slide.section===section).sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));
+  if(!rows.length){$("slides-table").innerHTML='<div class="empty">No pictures have been added to this slideshow yet.</div>';return;}
+  $("slides-table").innerHTML='<table><thead><tr><th>Position</th><th>Picture</th><th>Duration</th><th>Active</th><th>Actions</th></tr></thead><tbody>'+rows.map(slide=>'<tr><td><input type="number" min="1" value="'+(Number(slide.sort_order)+1)+'" data-slide-order="'+esc(slide.id)+'" style="width:76px;padding:8px;border:1px solid var(--line);border-radius:7px" aria-label="Slide position"></td><td><div style="display:flex;align-items:center;gap:10px"><img src="'+esc(slideImageUrl(slide.image_path))+'" alt="" style="width:76px;height:52px;object-fit:cover;border-radius:6px"><span><strong>'+esc(slide.image_path)+'</strong><div class="muted">'+esc(slideSectionNames[slide.section]||slide.section)+'</div></span></div></td><td><input type="number" min="1" max="120" value="'+Number(slide.duration_seconds||5)+'" data-slide-duration="'+esc(slide.id)+'" style="width:76px;padding:8px;border:1px solid var(--line);border-radius:7px" aria-label="Duration in seconds"> sec</td><td><input type="checkbox" data-slide-active="'+esc(slide.id)+'" '+(slide.is_active?'checked':'')+' aria-label="Slide active"></td><td><div class="actions"><button class="small-btn" data-save-slide="'+esc(slide.id)+'">Save</button><button class="small-btn" data-remove-slide="'+esc(slide.id)+'">Remove</button></div></td></tr>').join("")+'</tbody></table><div class="muted" style="padding-top:10px">Set position 1 for the first picture, 2 for the second, and so on. Save each row after making changes.</div>';
+}
+async function addSlide(event){
+  event.preventDefault();
+  const section=$("slide-section").value,imagePath=$("slide-image").value;
+  const duration=Number($("slide-duration").value),position=Number($("slide-position").value);
+  const message=$("slide-form-message");message.textContent="";
+  if(!imagePath){message.textContent="Choose an image first.";return;}
+  if(!Number.isInteger(duration)||duration<1||duration>120){message.textContent="Duration must be between 1 and 120 seconds.";return;}
+  if(!Number.isInteger(position)||position<1){message.textContent="Position must be 1 or higher.";return;}
+  const existing=state.slides.filter(s=>s.section===section).sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));
+  const insertAt=Math.min(position-1,existing.length);
+  const ordered=existing.slice();ordered.splice(insertAt,0,null);
+  const {data,error}=await supabase.from("slideshow_images").insert({section,image_path:imagePath,sort_order:insertAt,duration_seconds:duration,is_active:true}).select().single();
+  if(error){message.textContent=error.message;return;}
+  const reordered=existing.slice();reordered.splice(insertAt,0,data);
+  for(let i=0;i<reordered.length;i++){
+    const result=await supabase.from("slideshow_images").update({sort_order:i}).eq("id",reordered[i].id);
+    if(result.error){message.textContent="Picture added, but ordering could not be fully saved: "+result.error.message;await loadAll();return;}
+  }
+  $("slide-image").value="";$("slide-position").value="1";$("slide-duration").value="5";
+  await loadAll();message.textContent="Picture added to "+slideSectionNames[section]+".";
+}
+async function saveSlide(id){
+  const orderInput=document.querySelector('[data-slide-order="'+id+'"]');
+  const durationInput=document.querySelector('[data-slide-duration="'+id+'"]');
+  const activeInput=document.querySelector('[data-slide-active="'+id+'"]');
+  const position=Number(orderInput.value),duration=Number(durationInput.value);
+  if(!Number.isInteger(position)||position<1){notify("Position must be 1 or higher.");return;}
+  if(!Number.isInteger(duration)||duration<1||duration>120){notify("Duration must be between 1 and 120 seconds.");return;}
+  const slide=state.slides.find(s=>s.id===id);if(!slide)return;
+  const sectionRows=state.slides.filter(s=>s.section===slide.section).sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));
+  const reordered=sectionRows.filter(s=>s.id!==id);reordered.splice(Math.min(position-1,reordered.length),0,slide);
+  const updates=reordered.map((item,index)=>({id:item.id,sort_order:index,is_active:item.id===id?activeInput.checked:item.is_active,duration_seconds:item.id===id?duration:item.duration_seconds}));
+  for(const update of updates){
+    const {error}=await supabase.from("slideshow_images").update({sort_order:update.sort_order,is_active:update.is_active,duration_seconds:update.duration_seconds}).eq("id",update.id);
+    if(error){notify("Could not save slideshow changes: "+error.message);return;}
+  }
+  await loadAll();notify("Slideshow settings saved.");
+}
+async function removeSlide(id){
+  const slide=state.slides.find(s=>s.id===id);if(!slide)return;
+  if(!confirm("Remove this picture from the slideshow? The original image file in GitHub will not be deleted."))return;
+  const {error}=await supabase.from("slideshow_images").delete().eq("id",id);
+  if(error){notify("Could not remove picture: "+error.message);return;}
+  const remaining=state.slides.filter(s=>s.section===slide.section&&s.id!==id).sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));
+  for(let i=0;i<remaining.length;i++){
+    const result=await supabase.from("slideshow_images").update({sort_order:i}).eq("id",remaining[i].id);
+    if(result.error){notify("Picture removed, but positions could not be fully updated: "+result.error.message);await loadAll();return;}
+  }
+  await loadAll();notify("Picture removed from the slideshow. The GitHub image file is untouched.");
+}
+
 function switchView(name){
   document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));
   $("view-"+name).classList.remove("hidden");
@@ -182,6 +282,15 @@ $("add-thread-product").addEventListener("click",()=>productForm("thread",null))
 ["grill","thread"].forEach(which=>{ $(which+"-search").addEventListener("input",()=>renderProducts(which));$(which+"-active").addEventListener("change",()=>renderProducts(which));});
 $("grill-category").addEventListener("change",()=>renderProducts("grill"));
 $("order-business").addEventListener("change",renderOrders);$("order-status").addEventListener("change",renderOrders);$("enquiry-status").addEventListener("change",renderEnquiries);
+$("slide-add-form").addEventListener("submit",addSlide);
+$("slide-section").addEventListener("change",()=>{});
+$("slide-filter-section").addEventListener("change",renderSlides);
+$("slide-refresh-images").addEventListener("click",loadImageFiles);
+$("slide-refresh").addEventListener("click",loadAll);
+document.addEventListener("click",event=>{
+  const save=event.target.closest("[data-save-slide]");if(save){saveSlide(save.dataset.saveSlide);return;}
+  const remove=event.target.closest("[data-remove-slide]");if(remove)removeSlide(remove.dataset.removeSlide);
+});
 document.addEventListener("click",event=>{
   const edit=event.target.closest("[data-edit-product]");if(edit){const p=state.products.find(x=>x.id===edit.dataset.editProduct);productForm(p.business_id===businessBySlug("ales-grill-chill")?.id?"grill":"thread",p);return;}
   const toggle=event.target.closest("[data-toggle-product]");if(toggle)toggleProduct(toggle.dataset.toggleProduct);
