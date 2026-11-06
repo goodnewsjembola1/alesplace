@@ -183,6 +183,7 @@ PROMOTION AND HIGHLIGHT PRESENTATION
 
 .promo-arrow.prev { left: 18px; }
 .promo-arrow.next { right: 18px; }
+.promo-arrow[hidden], .promo-dots[hidden] { display: none !important; }
 
 .promo-dots {
   position: absolute;
@@ -826,7 +827,8 @@ footer a {
     <button class="promo-arrow prev" type="button" onclick="changePromoSlide(-1)" aria-label="Previous slide">&#10094;</button>
     <button class="promo-arrow next" type="button" onclick="changePromoSlide(1)" aria-label="Next slide">&#10095;</button>
     <div class="promo-dots" id="promo-dots"></div>
-  </div></section>
+  </div>
+</section>
 
 <!-- FOOD AND DRINKS CHOICES -->
 
